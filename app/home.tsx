@@ -33,6 +33,7 @@ const Home = () => {
           <Search />
           <BestChef />
           <PopularDish />
+          <View style={{ height: PixelRatio.getPixelSizeForLayoutSize(24) }} />
         </ScrollView>
         <Tab />
       </View>

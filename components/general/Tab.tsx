@@ -1,9 +1,15 @@
 import { Colors } from '@/constants/Colors'
 import { useRoute } from '@react-navigation/native'
+import { Href, router } from 'expo-router'
 import { View, Image, PixelRatio, TouchableOpacity } from 'react-native'
 
 const Tab = () => {
   const { name } = useRoute()
+
+  const handlePress = (screen: string) => {
+    if (name !== screen)
+      router.push(screen as Href)
+  }
   
   return (
     <View
@@ -23,53 +29,52 @@ const Tab = () => {
           elevation: 3,
           borderWidth: 1,
           borderColor: '#eee',
-          paddingVertical: PixelRatio.getPixelSizeForLayoutSize(6),
-          paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(8),
+          paddingVertical: PixelRatio.getPixelSizeForLayoutSize(5),
+          paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10),
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between'
         }}
       >
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity onPress={() => handlePress('home')} activeOpacity={1}>
           {
             name === 'home'
             ? <Image source={require('./../../assets/images/icons/colored/home.png')} />
             : <Image source={require('./../../assets/images/icons/grayscale/home.png')} />
           }
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity onPress={() => handlePress('chart')} activeOpacity={1}>
           {
             name === 'chart'
             ? <Image source={require('./../../assets/images/icons/colored/chart.png')} />
             : <Image source={require('./../../assets/images/icons/grayscale/chart.png')} />
           }
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity onPress={() => handlePress('add')} activeOpacity={1}>
           {
             name === 'add'
             ? (
               <View
                 style={{
                   backgroundColor: Colors.PRIMARY,
-                  borderRadius: 50,
-                  padding: 2
+                  borderRadius: 50
                 }}
               >
-                <Image style={{ width: 32, height: 32 }} source={require('./../../assets/images/icons/colored/add.png')} />
+                <Image source={require('./../../assets/images/icons/colored/add.png')} />
               </View>
             )
             : <Image source={require('./../../assets/images/icons/grayscale/add.png')} />
           }
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity onPress={() => handlePress('saved')} activeOpacity={1}>
           {
             name === 'saved'
             ? <Image source={require('./../../assets/images/icons/colored/saved.png')} />
             : <Image source={require('./../../assets/images/icons/grayscale/saved.png')} />
           }
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1}>
+        <TouchableOpacity onPress={() => handlePress('profile')} activeOpacity={1}>
           {
             name === 'profile'
             ? <Image source={require('./../../assets/images/icons/colored/profile.png')} />
