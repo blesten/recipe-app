@@ -14,7 +14,7 @@ const HorizontalDishCard = () => {
         paddingVertical: PixelRatio.getPixelSizeForLayoutSize(5),
         borderWidth: 1,
         borderColor: '#dedede',
-        borderRadius: 20,
+        borderRadius: 10,
         backgroundColor: '#fff',
         gap: 12,
         marginBottom: PixelRatio.getPixelSizeForLayoutSize(7)

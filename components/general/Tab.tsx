@@ -1,10 +1,12 @@
 import { Colors } from '@/constants/Colors'
 import { useRoute } from '@react-navigation/native'
-import { Href, router } from 'expo-router'
+import { Href, useRouter } from 'expo-router'
 import { View, Image, PixelRatio, TouchableOpacity } from 'react-native'
 
 const Tab = () => {
   const { name } = useRoute()
+
+  const router = useRouter()
 
   const handlePress = (screen: string) => {
     if (name !== screen)
