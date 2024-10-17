@@ -1,10 +1,13 @@
-import Tab from '@/components/general/Tab'
+import { View, Text, PixelRatio, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { View, Text, PixelRatio, ScrollView, Image } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import Tab from '@/components/general/Tab'
 
 const profile = () => {
+  const router = useRouter()
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <Text style={{ fontFamily: 'poppins-medium', fontSize: 17 * PixelRatio.getFontScale(), textAlign: 'center', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }}>My Profile</Text>
@@ -28,7 +31,8 @@ const profile = () => {
           <Text style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(1), color: '#A8A8A8', fontFamily: 'poppins-regular', fontSize: 14 * PixelRatio.getFontScale() }}>test@gmail.com</Text>
         </View>
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(12), gap: PixelRatio.getPixelSizeForLayoutSize(7) }}>
-          <View
+          <TouchableOpacity
+            activeOpacity={1}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -58,8 +62,10 @@ const profile = () => {
               <Text style={{ fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale(), color: '#2C2C2C' }}>Edit Profile</Text>
               <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
             </View>
-          </View>
-          <View
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => router.push('/change-password')}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -89,8 +95,9 @@ const profile = () => {
               <Text style={{ fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale(), color: '#2C2C2C' }}>Change Password</Text>
               <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
             </View>
-          </View>
-          <View
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -120,7 +127,7 @@ const profile = () => {
               <Text style={{ fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale(), color: '#2C2C2C' }}>Chef Profile</Text>
               <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
             </View>
-          </View>
+          </TouchableOpacity>
           <View
             style={{
               flexDirection: 'row',
