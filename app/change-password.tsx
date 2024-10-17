@@ -1,10 +1,10 @@
 import { View, Text, Appearance, StatusBar, TouchableOpacity, PixelRatio, TextInput } from 'react-native'
 import { useEffect, useState } from 'react'
+import { LinearGradient } from 'expo-linear-gradient'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { LinearGradient } from 'expo-linear-gradient'
 
 const ChangePassword = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())

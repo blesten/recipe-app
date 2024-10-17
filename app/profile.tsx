@@ -33,6 +33,7 @@ const profile = () => {
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(12), gap: PixelRatio.getPixelSizeForLayoutSize(7) }}>
           <TouchableOpacity
             activeOpacity={1}
+            onPress={() => router.push('/edit-profile')}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -97,6 +98,7 @@ const profile = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => router.push('/chef-profile')}
             activeOpacity={1}
             style={{
               flexDirection: 'row',
