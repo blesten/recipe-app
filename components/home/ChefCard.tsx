@@ -1,10 +1,13 @@
-import { View, Text, PixelRatio } from 'react-native'
+import { Text, PixelRatio, TouchableOpacity } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
 
 const ChefCard = () => {
+  const router = useRouter()
+
   return (
-    <View style={{ flex: 1 }}>
+    <TouchableOpacity activeOpacity={1} onPress={() => router.push(`/chef/${123}`)} style={{ flex: 1 }}>
       <LinearGradient
         colors={[Colors.PRIMARY, Colors.SECONDARY]}
         start={{ x: 0, y: 1 }}
@@ -20,7 +23,7 @@ const ChefCard = () => {
         <Text style={{ letterSpacing: 1, fontFamily: 'poppins-medium', color: '#fff', fontSize: 20 * PixelRatio.getFontScale() }}>JD</Text>
       </LinearGradient>
       <Text style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(2), fontFamily: 'poppins-regular', textAlign: 'center' }}>Juna</Text>
-    </View>
+    </TouchableOpacity>
   )
 }
 
