@@ -1,4 +1,5 @@
-import { View, Text, PixelRatio, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, PixelRatio, ScrollView, Image, TouchableOpacity, Animated, Dimensions, TouchableWithoutFeedback } from 'react-native'
+import { useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
@@ -7,6 +8,28 @@ import Tab from '@/components/general/Tab'
 
 const profile = () => {
   const router = useRouter()
+
+  const [isLogoutClicked, setIsLogoutClicked] = useState(false)
+
+  const screenHeight = Dimensions.get('window').height
+  const slideAnim = useRef(new Animated.Value(screenHeight)).current
+
+  const toggleLogoutOverlay = () => {
+    if (isLogoutClicked) {
+      Animated.timing(slideAnim, {
+        toValue: screenHeight,
+        duration: 250,
+        useNativeDriver: true,
+      }).start(() => setIsLogoutClicked(false))
+    } else {
+      setIsLogoutClicked(true)
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -130,40 +153,84 @@ const profile = () => {
               <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: PixelRatio.getPixelSizeForLayoutSize(7)
-            }}
-          >
-            <View
-              style={{
-                borderRadius: 50,
-                width: PixelRatio.getPixelSizeForLayoutSize(20),
-                height: PixelRatio.getPixelSizeForLayoutSize(20),
-                backgroundColor: '#FFD3D3',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-              <Image source={require('./../assets/images/icons/colored/logout.png')} />
-            </View>
+          <TouchableOpacity activeOpacity={1} onPress={toggleLogoutOverlay}>
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignContent: 'center',
-                flex: 1
-              }}  
+                alignItems: 'center',
+                gap: PixelRatio.getPixelSizeForLayoutSize(7)
+              }}
             >
-              <Text style={{ fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale(), color: '#2C2C2C' }}>Log Out</Text>
-              <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
+              <View
+                style={{
+                  borderRadius: 50,
+                  width: PixelRatio.getPixelSizeForLayoutSize(20),
+                  height: PixelRatio.getPixelSizeForLayoutSize(20),
+                  backgroundColor: '#FFD3D3',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <Image source={require('./../assets/images/icons/colored/logout.png')} />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignContent: 'center',
+                  flex: 1
+                }}  
+              >
+                <Text style={{ fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale(), color: '#2C2C2C' }}>Log Out</Text>
+                <Ionicons name='chevron-forward-outline' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='black' />
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
       <Tab />
+
+      {
+        isLogoutClicked && 
+        <TouchableWithoutFeedback onPress={toggleLogoutOverlay}>
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: 'rgba(0, 0, 0, .8)',
+              justifyContent: 'flex-end'
+            }}
+          >
+            <TouchableWithoutFeedback>
+              <Animated.View
+                style={{
+                  backgroundColor: 'white',
+                  borderTopLeftRadius: 20,
+                  borderTopRightRadius: 20,
+                  padding: PixelRatio.getPixelSizeForLayoutSize(16),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  transform: [{ translateY: slideAnim }],
+                }}
+              >
+                <Image source={require('./../assets/images/sign_out.png')} />
+                <Text style={{ fontFamily: 'poppins-medium', fontSize: 17 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(16) }}>Are you sure to sign out?</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
+                  <TouchableOpacity onPress={toggleLogoutOverlay} style={{ backgroundColor: '#F3F3F3', borderRadius: 6, paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4) }} activeOpacity={1}>
+                    <Text style={{ color: '#B2B2B2', fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>No, I'm not</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ backgroundColor: '#FB5555', borderRadius: 6, paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4) }} activeOpacity={1}>
+                    <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Yes, I'm sure</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      }
     </SafeAreaView>
   )
 }
