@@ -31,7 +31,7 @@ const SignOutForm = () => {
               style={{
                 fontFamily: 'literata-semibold',
                 color: '#fff',
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+                fontSize: 48 * PixelRatio.getFontScale()
               }}
             >
               Sign
@@ -40,7 +40,7 @@ const SignOutForm = () => {
               style={{
                 fontFamily: 'literata-semibold',
                 color: '#fff',
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+                fontSize: 48 * PixelRatio.getFontScale()
               }}
             >
               Up
@@ -51,7 +51,7 @@ const SignOutForm = () => {
               fontFamily: 'poppins-regular',
               color: '#fff',
               marginTop: PixelRatio.getPixelSizeForLayoutSize(8),
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(5.2),
+              fontSize: 15 * PixelRatio.getFontScale(),
               lineHeight: PixelRatio.getPixelSizeForLayoutSize(11)
             }}
           >
@@ -257,7 +257,7 @@ const SignOutForm = () => {
               color: '#fff',
               textAlign: 'center',
               fontFamily: 'poppins-semibold',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(5)
+              fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
             Sign Up

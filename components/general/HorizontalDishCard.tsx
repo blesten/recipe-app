@@ -1,9 +1,12 @@
 import { Colors } from '@/constants/Colors'
 import { Ionicons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useRouter } from 'expo-router'
 import { View, Text, TouchableOpacity, PixelRatio } from 'react-native'
 
 const HorizontalDishCard = () => {
+  const router = useRouter()
+
   return (
     <View
       style={{
@@ -60,7 +63,7 @@ const HorizontalDishCard = () => {
             </View>
             <Text style={{ fontFamily: 'poppins-regular', fontSize: 10 * PixelRatio.getFontScale(), color: '#B3B3B3' }}>(20 reviews)</Text>
           </View>
-          <TouchableOpacity style={{ marginTop: 5 }} activeOpacity={1}>
+          <TouchableOpacity style={{ marginTop: 5 }} activeOpacity={1} onPress={() => router.push('/dish/123')}>
             <View
               style={{
                 borderRadius: 50,

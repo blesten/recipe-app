@@ -26,7 +26,7 @@ const GetStarted = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}
           >
             Enjoy
@@ -35,7 +35,7 @@ const GetStarted = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}>
             Cooking
           </Text>
@@ -45,7 +45,7 @@ const GetStarted = () => {
             fontFamily: 'poppins-regular',
             color: '#fff',
             marginTop: PixelRatio.getPixelSizeForLayoutSize(8),
-            fontSize: PixelRatio.getPixelSizeForLayoutSize(5.2),
+            fontSize: 15 * PixelRatio.getFontScale(),
             lineHeight: PixelRatio.getPixelSizeForLayoutSize(10)
           }}>
           Delicious and detailed restaurant recipes on your phone
@@ -75,7 +75,7 @@ const GetStarted = () => {
               color: '#fff',
               textAlign: 'center',
               fontFamily: 'poppins-semibold',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(5)
+              fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
             Get Started

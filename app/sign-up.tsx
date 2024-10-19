@@ -27,7 +27,7 @@ const SignOut = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}
           >
             Sign
@@ -36,7 +36,7 @@ const SignOut = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}
           >
             Up
@@ -47,7 +47,7 @@ const SignOut = () => {
             fontFamily: 'poppins-regular',
             color: '#fff',
             marginTop: PixelRatio.getPixelSizeForLayoutSize(8),
-            fontSize: PixelRatio.getPixelSizeForLayoutSize(5.2),
+            fontSize: 15 * PixelRatio.getFontScale(),
             lineHeight: PixelRatio.getPixelSizeForLayoutSize(10)
           }}
         >
@@ -84,7 +84,7 @@ const SignOut = () => {
             style={{
               textAlign: 'center',
               fontFamily: 'poppins-medium',
-              fontSize: 14
+              fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
             Sign up with Google
@@ -111,7 +111,7 @@ const SignOut = () => {
             style={{
               color: '#fff',
               fontFamily: 'poppins-medium',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(4)
+              fontSize: 11 * PixelRatio.getFontScale()
             }}
           >
             OR
@@ -140,7 +140,7 @@ const SignOut = () => {
               color: '#fff',
               textAlign: 'center',
               fontFamily: 'poppins-semibold',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(5)
+              fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
             Create new account

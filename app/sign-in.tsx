@@ -31,7 +31,7 @@ const SignIn = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}
           >
             Sign
@@ -40,7 +40,7 @@ const SignIn = () => {
             style={{
               fontFamily: 'literata-semibold',
               color: '#fff',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(17)
+              fontSize: 48 * PixelRatio.getFontScale()
             }}
           >
             In
@@ -51,7 +51,7 @@ const SignIn = () => {
             fontFamily: 'poppins-regular',
             color: '#fff',
             marginTop: PixelRatio.getPixelSizeForLayoutSize(8),
-            fontSize: PixelRatio.getPixelSizeForLayoutSize(5.2),
+            fontSize: 15 * PixelRatio.getFontScale(),
             lineHeight: PixelRatio.getPixelSizeForLayoutSize(11)
           }}
         >
@@ -173,7 +173,7 @@ const SignIn = () => {
                 color: '#fff',
                 textAlign: 'center',
                 fontFamily: 'poppins-semibold',
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(5)
+                fontSize: 14 * PixelRatio.getFontScale()
               }}
             >
               Sign In
@@ -192,7 +192,7 @@ const SignIn = () => {
             <Text
               style={{
                 color: '#fff',
-                fontSize: PixelRatio.getPixelSizeForLayoutSize(4.5),
+                fontSize: 13 * PixelRatio.getFontScale(),
                 fontFamily: 'poppins-medium'
               }}
             >
@@ -236,7 +236,7 @@ const SignIn = () => {
             style={{
               color: '#fff',
               fontFamily: 'poppins-medium',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(4)
+              fontSize: 11 * PixelRatio.getFontScale()
             }}
           >
             OR
@@ -271,7 +271,7 @@ const SignIn = () => {
             style={{
               textAlign: 'center',
               fontFamily: 'poppins-medium',
-              fontSize: PixelRatio.getPixelSizeForLayoutSize(4.7)
+              fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
             Sign in with Google
