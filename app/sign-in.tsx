@@ -8,6 +8,7 @@ import { validEmail } from '@/utils/validator'
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/config/firebaseConfig'
+import * as SecureStore from 'expo-secure-store'
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
@@ -62,6 +63,8 @@ const SignIn = () => {
         })
         return
       }
+
+      await SecureStore.setItemAsync('isAuth', 'Y')
 
       router.push('/home')
     } catch (err: any) {
