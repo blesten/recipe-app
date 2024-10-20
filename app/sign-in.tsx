@@ -1,7 +1,7 @@
 import { View, Text, PixelRatio, SafeAreaView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { validEmail } from '@/utils/validator'
