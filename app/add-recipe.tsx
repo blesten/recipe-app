@@ -10,32 +10,11 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIcons'
 import Octicons from '@expo/vector-icons/build/Octicons'
 import { LinearGradient } from 'expo-linear-gradient'
+import IngredientPicker from '@/components/general/IngredientPicker'
 
 const AddRecipe = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())
   const [image, setImage] = useState('')
-
-  const [isIngredientClicked, setIsIngredientClicked] = useState(false)
-
-  const screenHeight = Dimensions.get('window').height
-  const slideAnim = useRef(new Animated.Value(screenHeight)).current
-
-  const toggleIngredientOverlay = () => {
-    if (isIngredientClicked) {
-      Animated.timing(slideAnim, {
-        toValue: screenHeight,
-        duration: 250,
-        useNativeDriver: true
-      }).start(() => setIsIngredientClicked(false))
-    } else {
-      setIsIngredientClicked(true)
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 250,
-        useNativeDriver: true
-      }).start()
-    }
-  }
 
   const onImagePick = async() => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -179,29 +158,7 @@ const AddRecipe = () => {
               </TouchableOpacity>
             </View>
             <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(5), flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={toggleIngredientOverlay}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 16,
-                  flex: 1,
-                  borderWidth: 1,
-                  borderColor: '#ccc',
-                  borderRadius: 6,
-                  padding: PixelRatio.getPixelSizeForLayoutSize(4)
-                }}
-              >
-                <View
-                  style={{
-                    width: PixelRatio.getPixelSizeForLayoutSize(11),
-                    height: PixelRatio.getPixelSizeForLayoutSize(11),
-                    backgroundColor: '#eee'
-                  }}
-                />
-                <Text style={{ fontFamily: 'poppins-regular' }}>Tomato</Text>
-              </TouchableOpacity>
+              <IngredientPicker />
               <View
                 style={{
                   flex: 1,
@@ -227,33 +184,7 @@ const AddRecipe = () => {
             </View>
             <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(5) }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 16,
-                    flex: 1,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    borderRadius: 6,
-                    padding: PixelRatio.getPixelSizeForLayoutSize(4)
-                  }}
-                >
-                  <View
-                    style={{
-                      width: PixelRatio.getPixelSizeForLayoutSize(11),
-                      height: PixelRatio.getPixelSizeForLayoutSize(11),
-                      backgroundColor: '#eee'
-                    }}
-                  />
-                  <TextInput
-                    placeholder='Tomato'
-                    style={{
-                      fontFamily: 'poppins-regular',
-                      flex: 1
-                    }}
-                  />
-                </View>
+                <IngredientPicker />
                 <View
                   style={{
                     flex: 1,
@@ -345,130 +276,6 @@ const AddRecipe = () => {
         </ScrollView>
       </View>
       <Tab />
-
-      {
-        isIngredientClicked &&
-        <TouchableWithoutFeedback onPress={toggleIngredientOverlay}>
-          <View
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              backgroundColor: 'rgba(0,0,0,.8)',
-              justifyContent: 'flex-end'
-            }}
-          >
-            <TouchableWithoutFeedback>
-              <Animated.View
-                style={{
-                  backgroundColor: 'white',
-                  borderTopLeftRadius: 20,
-                  borderTopRightRadius: 20,
-                  padding: PixelRatio.getPixelSizeForLayoutSize(10),
-                  maxHeight: PixelRatio.getPixelSizeForLayoutSize(125),
-                  transform: [{ translateY: slideAnim }],
-                }}
-              >
-                <Text style={{ fontFamily: 'poppins-semibold', fontSize: 16 * PixelRatio.getFontScale() }}>Choose Ingredients</Text>
-                <ScrollView>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={1} style={{ flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-                    <View
-                      style={{
-                        width: PixelRatio.getPixelSizeForLayoutSize(14),
-                        height: PixelRatio.getPixelSizeForLayoutSize(14),
-                        backgroundColor: '#eee'
-                      }}
-                    />
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Tomato</Text>
-                  </TouchableOpacity>
-                </ScrollView>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      }
     </SafeAreaView>
   )
 }

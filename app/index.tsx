@@ -13,7 +13,7 @@ const Index = () => {
   
   if (fontsLoaded) {
     return (
-      <Redirect href={'/add-recipe'} />
+      <Redirect href={'/get-started'} />
     )
   }
 
