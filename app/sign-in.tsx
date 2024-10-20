@@ -1,14 +1,75 @@
-import { View, Text, PixelRatio, SafeAreaView, TextInput, TouchableOpacity, Image } from 'react-native'
+import { View, Text, PixelRatio, SafeAreaView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { validEmail } from '@/utils/validator'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '@/config/firebaseConfig'
 
 const SignIn = () => {
+  const [loading, setLoading] = useState(false)
+
   const [showPassword, setShowPassword] = useState(false)
 
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   const router = useRouter()
+
+  const login = async() => {
+    setLoading(true)
+    try {
+      if (!validEmail) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Login failed',
+          textBody: 'Please provide valid email address'
+        })
+        return
+      }
+
+      if (!password) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Login failed',
+          textBody: 'Please provide password'
+        })
+        return
+      }
+
+      const getUserQuery = query(collection(db, 'User'), where('email', '==', email))
+      const getUserQuerySnapshot = await getDocs(getUserQuery)
+
+      if (getUserQuerySnapshot.empty) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Login failed',
+          textBody: 'Invalid credential'
+        })
+        return
+      }
+
+      const userDoc = getUserQuerySnapshot.docs[0]
+
+      if (userDoc.data().password !== password) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Login failed',
+          textBody: 'Invalid credential'
+        })
+        return
+      }
+
+      router.push('/home')
+    } catch (err: any) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -84,6 +145,8 @@ const SignIn = () => {
             <TextInput
               placeholder='Email address'
               keyboardType='email-address'
+              value={email}
+              onChangeText={e => setEmail(e)}
               autoCapitalize='none'
               style={{
                 flex: 1,
@@ -124,6 +187,8 @@ const SignIn = () => {
                 placeholder='Password'
                 secureTextEntry={!showPassword}
                 autoCapitalize='none'
+                value={password}
+                onChangeText={e => setPassword(e)}
                 style={{
                   fontFamily: 'poppins-regular',
                   flex: 1
@@ -161,6 +226,8 @@ const SignIn = () => {
         >
           <TouchableOpacity
             activeOpacity={.7}
+            disabled={loading}
+            onPress={login}
             style={{
               width: '100%',
               backgroundColor: Colors.SECONDARY,
@@ -176,7 +243,11 @@ const SignIn = () => {
                 fontSize: 14 * PixelRatio.getFontScale()
               }}
             >
-              Sign In
+              {
+                loading
+                ? <ActivityIndicator color='#fff' />
+                : 'Sign In'
+              }
             </Text>
           </TouchableOpacity>
           <View

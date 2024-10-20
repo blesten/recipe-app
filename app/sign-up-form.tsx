@@ -1,12 +1,98 @@
-import { View, Text, SafeAreaView, TextInput, TouchableOpacity, PixelRatio } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, TouchableOpacity, PixelRatio, ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '@/config/firebaseConfig'
+import { validEmail, validPassword } from '@/utils/validator'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
+import { useRouter } from 'expo-router'
 
 const SignOutForm = () => {
+  const [loading, setLoading] = useState(false)
+
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+
+  const router = useRouter()
+
+  const register = async() => {
+    setLoading(true)
+    try {
+      if (!name) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Registration failed',
+          textBody: 'Please provide name',
+        })
+        return
+      }
+
+      if (!validEmail(email)) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Registration failed',
+          textBody: 'Please provide valid email address',
+        })
+        return
+      }
+
+      const checkEmailQuery = query(collection(db, 'User'), where('email', '==', email))
+      const checkEmailQuerySnapshot = await getDocs(checkEmailQuery)
+
+      if (!checkEmailQuerySnapshot.empty) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Registration failed',
+          textBody: 'Email has been registered before',
+        })
+        return
+      }
+
+      if (!validPassword(password)) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Registration failed',
+          textBody: 'Password should be 8 characters and should contains lowercase, uppercase, number, and symbol',
+        })
+        return
+      }
+
+      if (password !== passwordConfirmation) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Registration failed',
+          textBody: 'Password confirmation is not matched',
+        })
+        return
+      }
+
+      await addDoc(collection(db, 'User'), {
+        name,
+        email,
+        password,
+        avatar: ''
+      })
+
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Registration success',
+        textBody: 'Credential has been registered successfully',
+      })
+
+      router.push('/sign-in')
+    } catch (err: any) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <SafeAreaView>
@@ -84,6 +170,8 @@ const SignOutForm = () => {
               <TextInput
                 placeholder='Name'
                 autoCapitalize='none'
+                value={name}
+                onChangeText={e => setName(e)}
                 style={{
                   flex: 1,
                   fontFamily: 'poppins-regular',
@@ -112,6 +200,8 @@ const SignOutForm = () => {
                 placeholder='Email address'
                 keyboardType='email-address'
                 autoCapitalize='none'
+                value={email}
+                onChangeText={e => setEmail(e)}
                 style={{
                   flex: 1,
                   fontFamily: 'poppins-regular',
@@ -151,6 +241,8 @@ const SignOutForm = () => {
                   placeholder='Password'
                   secureTextEntry={!showPassword}
                   autoCapitalize='none'
+                  value={password}
+                  onChangeText={e => setPassword(e)}
                   style={{
                     fontFamily: 'poppins-regular',
                     flex: 1
@@ -212,6 +304,8 @@ const SignOutForm = () => {
                   placeholder='Password confirmation'
                   secureTextEntry={!showPasswordConfirmation}
                   autoCapitalize='none'
+                  value={passwordConfirmation}
+                  onChangeText={e => setPasswordConfirmation(e)}
                   style={{
                     fontFamily: 'poppins-regular',
                     flex: 1
@@ -245,6 +339,8 @@ const SignOutForm = () => {
         </View>
         <TouchableOpacity
           activeOpacity={.7}
+          onPress={register}
+          disabled={loading}
           style={{
             width: '100%',
             backgroundColor: Colors.SECONDARY,
@@ -260,7 +356,11 @@ const SignOutForm = () => {
               fontSize: 14 * PixelRatio.getFontScale()
             }}
           >
-            Sign Up
+            {
+              loading
+              ? <ActivityIndicator color='#fff' />
+              : 'Sign Up'
+            }
           </Text>
         </TouchableOpacity>
       </View>
