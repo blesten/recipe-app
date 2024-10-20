@@ -1,7 +1,7 @@
 import { View, Text, PixelRatio, SafeAreaView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { validEmail } from '@/utils/validator'
@@ -9,6 +9,7 @@ import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/config/firebaseConfig'
 import * as SecureStore from 'expo-secure-store'
+import bcrypt from 'bcryptjs'
 
 const SignIn = () => {
   const [loading, setLoading] = useState(false)
@@ -55,7 +56,8 @@ const SignIn = () => {
 
       const userDoc = getUserQuerySnapshot.docs[0]
 
-      if (userDoc.data().password !== password) {
+      const encryptedPassword = bcrypt.compareSync(password, userDoc.data().password)
+      if (!encryptedPassword) {
         Toast.show({
           type: ALERT_TYPE.DANGER,
           title: 'Login failed',

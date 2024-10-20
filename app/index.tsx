@@ -1,8 +1,10 @@
 import { Redirect } from 'expo-router'
 import { useFonts } from 'expo-font'
-import { Text } from 'react-native'
+import { Text, LogBox } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
+
+LogBox.ignoreLogs(['Requiring unknown module "undefined"'])
 
 const Index = () => {
   const [loading, setLoading] = useState(true)

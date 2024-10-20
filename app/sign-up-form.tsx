@@ -8,6 +8,13 @@ import { db } from '@/config/firebaseConfig'
 import { validEmail, validPassword } from '@/utils/validator'
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { useRouter } from 'expo-router'
+import bcrypt from 'bcryptjs'
+
+// @ts-ignore
+bcrypt.setRandomFallback(len => {
+  const buf = new Uint8Array(len)
+  return buf.map(() => Math.floor(Math.random() * 256))
+})
 
 const SignOutForm = () => {
   const [loading, setLoading] = useState(false)
@@ -73,10 +80,13 @@ const SignOutForm = () => {
         return
       }
 
+      const passwordSalt = bcrypt.genSaltSync(10)
+      const passwordHash = bcrypt.hashSync(password, passwordSalt)
+
       await addDoc(collection(db, 'User'), {
         name,
         email,
-        password,
+        password: passwordHash,
         avatar: ''
       })
 

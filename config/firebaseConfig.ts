@@ -1,13 +1,14 @@
+import { FB_API_KEY, FB_APP_ID, FB_AUTH_DOMAIN, FB_MESSAGING_SENDER_ID, FB_PROJECT_ID, FB_STORAGE_BUCKET } from '@/utils/constant';
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCHCvdM1hpmIUjysg_wid64UOu8gBgeZk8",
-  authDomain: "cook-it-1ad0b.firebaseapp.com",
-  projectId: "cook-it-1ad0b",
-  storageBucket: "cook-it-1ad0b.appspot.com",
-  messagingSenderId: "5466935336",
-  appId: "1:5466935336:web:eb6154aa9a1873bd61651d"
+  apiKey: FB_API_KEY,
+  authDomain: FB_AUTH_DOMAIN,
+  projectId: FB_PROJECT_ID,
+  storageBucket: FB_STORAGE_BUCKET,
+  messagingSenderId: FB_MESSAGING_SENDER_ID,
+  appId: FB_APP_ID
 };
 
 const app = initializeApp(firebaseConfig)
