@@ -3,6 +3,8 @@ import { useFonts } from 'expo-font'
 import { Text, LogBox } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { useEffect, useState } from 'react'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from '@/config/firebaseConfig'
 
 LogBox.ignoreLogs(['Requiring unknown module "undefined"'])
 
@@ -22,7 +24,11 @@ const Index = () => {
     const getStoreValue = async() => {
       setLoading(true)
       const storeVal = await SecureStore.getItemAsync('isAuth')
-      if (storeVal && storeVal === 'Y') {
+
+      const getUserQuery = query(collection(db, 'User'), where('email', '==', storeVal))
+      const getUserQuerySnapshot = await getDocs(getUserQuery)
+
+      if (!getUserQuerySnapshot.empty) {
         setTo('/home')
       }
       setLoading(false)

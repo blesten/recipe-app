@@ -1,8 +1,22 @@
 import { View, Text, PixelRatio } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Colors } from '@/constants/Colors'
+import { getUserData } from '@/utils/function'
+import { useEffect, useState } from 'react'
+import { DocumentData } from 'firebase/firestore'
 
 const Header = () => {
+  const [user, setUser] = useState<DocumentData | null>(null)
+  
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      setUser(result!.data)
+    }
+
+    getUser()
+  }, [])
+
   return (
     <View
       style={{
@@ -18,7 +32,9 @@ const Header = () => {
         }}
       >
         <Text style={{ color: '#A5A5A5', fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale() }}>Good morning,</Text>
-        <Text style={{ fontFamily: 'poppins-semibold', fontSize: 24 * PixelRatio.getFontScale() }}>John Doe</Text>
+        <Text style={{ fontFamily: 'poppins-semibold', fontSize: 24 * PixelRatio.getFontScale() }}>
+          {user && user.name}
+        </Text>
       </View>
       <LinearGradient
         colors={[Colors.PRIMARY, Colors.SECONDARY]}

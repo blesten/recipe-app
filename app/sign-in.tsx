@@ -66,7 +66,7 @@ const SignIn = () => {
         return
       }
 
-      await SecureStore.setItemAsync('isAuth', 'Y')
+      await SecureStore.setItemAsync('isAuth', userDoc.data().email)
 
       router.push('/home')
     } catch (err: any) {

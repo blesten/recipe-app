@@ -1,19 +1,87 @@
-import { View, Text, Appearance, StatusBar, TouchableOpacity, PixelRatio, TextInput } from 'react-native'
+import { View, Text, Appearance, StatusBar, TouchableOpacity, PixelRatio, TextInput, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { collection, doc, DocumentData, query, updateDoc, where } from 'firebase/firestore'
+import { db } from '@/config/firebaseConfig'
+import { getUserData } from '@/utils/function'
+import bcrypt from 'bcryptjs'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
+import { validPassword } from '@/utils/validator'
 
 const ChangePassword = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())
+
+  const [loading, setLoading] = useState(false)
+
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [newPasswordConfirmation, setNewPasswordConfirmation] = useState('')
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showNewPasswordConfirmation, setShowNewPasswordConfirmation] = useState(false)
 
+  const [user, setUser] = useState<DocumentData | null>(null)
+
   const router = useRouter()
+
+  const handleChangePassword = async() => {
+    setLoading(true)
+    try {
+      if (user) {
+        const encryptedPassword = bcrypt.compareSync(currentPassword, user.password)
+        if (!encryptedPassword) {
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Change password failed',
+            textBody: 'Current password is invalid'
+          })
+          return
+        }
+
+        if (!validPassword(newPassword)) {
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Change password failed',
+            textBody: 'Password should be 8 characters and should contains lowercase, uppercase, number, and symbol'
+          })
+          return
+        }
+
+        if (newPassword !== newPasswordConfirmation) {
+          Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Change password failed',
+            textBody: 'Password confirmation is not matched'
+          })
+          return
+        }
+
+        const passwordSalt = bcrypt.genSaltSync(10)
+        const passwordHash = bcrypt.hashSync(newPassword, passwordSalt)
+
+        await updateDoc(doc(db, 'User', user.id), {
+          password: passwordHash
+        })
+
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Change password success',
+          textBody: 'Password has been changed successfully'
+        })
+
+        router.push('/profile')
+      }
+    } catch (err: any) {
+      console.log(err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -21,6 +89,15 @@ const ChangePassword = () => {
     })
 
     return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      setUser(result!.data)
+    }
+
+    getUser()
   }, [])
   
   return (
@@ -70,6 +147,8 @@ const ChangePassword = () => {
                 placeholder='Current Password'
                 secureTextEntry={!showCurrentPassword}
                 autoCapitalize='none'
+                value={currentPassword}
+                onChangeText={e => setCurrentPassword(e)}
                 style={{
                   fontFamily: 'poppins-regular',
                   flex: 1
@@ -132,6 +211,8 @@ const ChangePassword = () => {
                 placeholder='New Password'
                 secureTextEntry={!showNewPassword}
                 autoCapitalize='none'
+                value={newPassword}
+                onChangeText={e => setNewPassword(e)}
                 style={{
                   fontFamily: 'poppins-regular',
                   flex: 1
@@ -194,6 +275,8 @@ const ChangePassword = () => {
                 placeholder='New Password Confirmation'
                 secureTextEntry={!showNewPasswordConfirmation}
                 autoCapitalize='none'
+                value={newPasswordConfirmation}
+                onChangeText={e => setNewPasswordConfirmation(e)}
                 style={{
                   fontFamily: 'poppins-regular',
                   flex: 1
@@ -234,12 +317,20 @@ const ChangePassword = () => {
           }}
         >
           <TouchableOpacity
+            disabled={loading}
+            onPress={handleChangePassword}
             activeOpacity={1}
             style={{
               paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4)
             }}
           >
-            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>Save Changes</Text>
+            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>
+              {
+                loading
+                ? <ActivityIndicator color='#fff' />
+                : 'Save Changes'
+              }
+            </Text>
           </TouchableOpacity>
         </LinearGradient>
       </View>
