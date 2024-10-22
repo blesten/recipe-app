@@ -30,6 +30,7 @@ const SignIn = () => {
           title: 'Login failed',
           textBody: 'Please provide valid email address'
         })
+        setLoading(false)
         return
       }
 
@@ -39,6 +40,7 @@ const SignIn = () => {
           title: 'Login failed',
           textBody: 'Please provide password'
         })
+        setLoading(false)
         return
       }
 
@@ -51,6 +53,7 @@ const SignIn = () => {
           title: 'Login failed',
           textBody: 'Invalid credential'
         })
+        setLoading(false)
         return
       }
 
@@ -63,6 +66,7 @@ const SignIn = () => {
           title: 'Login failed',
           textBody: 'Invalid credential'
         })
+        setLoading(false)
         return
       }
 

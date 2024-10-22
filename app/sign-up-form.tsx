@@ -38,6 +38,7 @@ const SignOutForm = () => {
           title: 'Registration failed',
           textBody: 'Please provide name',
         })
+        setLoading(false)
         return
       }
 
@@ -47,6 +48,7 @@ const SignOutForm = () => {
           title: 'Registration failed',
           textBody: 'Please provide valid email address',
         })
+        setLoading(false)
         return
       }
 
@@ -59,6 +61,7 @@ const SignOutForm = () => {
           title: 'Registration failed',
           textBody: 'Email has been registered before',
         })
+        setLoading(false)
         return
       }
 
@@ -68,6 +71,7 @@ const SignOutForm = () => {
           title: 'Registration failed',
           textBody: 'Password should be 8 characters and should contains lowercase, uppercase, number, and symbol',
         })
+        setLoading(false)
         return
       }
 
@@ -77,6 +81,7 @@ const SignOutForm = () => {
           title: 'Registration failed',
           textBody: 'Password confirmation is not matched',
         })
+        setLoading(false)
         return
       }
 

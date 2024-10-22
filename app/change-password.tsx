@@ -33,7 +33,7 @@ const ChangePassword = () => {
     setLoading(true)
     try {
       if (user) {
-        const encryptedPassword = bcrypt.compareSync(currentPassword, user.password)
+        const encryptedPassword = await bcrypt.compare(currentPassword, user.password)
         if (!encryptedPassword) {
           Toast.show({
             type: ALERT_TYPE.DANGER,

@@ -1,18 +1,27 @@
 import { View, Text, PixelRatio, ScrollView, Image, TouchableOpacity, Animated, Dimensions, TouchableWithoutFeedback } from 'react-native'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
+import * as SecureStore from 'expo-secure-store'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import Tab from '@/components/general/Tab'
+import { DocumentData } from 'firebase/firestore'
+import { getUserData } from '@/utils/function'
 
 const profile = () => {
   const router = useRouter()
 
   const [isLogoutClicked, setIsLogoutClicked] = useState(false)
+  const [user, setUser] = useState<DocumentData | null>(null)
 
   const screenHeight = Dimensions.get('window').height
   const slideAnim = useRef(new Animated.Value(screenHeight)).current
+
+  const handleLogout = async() => {
+    await SecureStore.setItemAsync('isAuth', '')
+    router.push('/get-started')
+  }
 
   const toggleLogoutOverlay = () => {
     if (isLogoutClicked) {
@@ -27,9 +36,18 @@ const profile = () => {
         toValue: 0,
         duration: 250,
         useNativeDriver: true,
-      }).start();
+      }).start()
     }
-  };
+  }
+  
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      setUser(result!.data)
+    }
+
+    getUser()
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -50,8 +68,8 @@ const profile = () => {
           <View style={{ width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), backgroundColor: Colors.PRIMARY, borderRadius: 100 }} />
         </View>
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
-          <Text style={{ fontFamily: 'poppins-medium', fontSize: 18 * PixelRatio.getFontScale() }}>John Doe</Text>
-          <Text style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(1), color: '#A8A8A8', fontFamily: 'poppins-regular', fontSize: 14 * PixelRatio.getFontScale() }}>test@gmail.com</Text>
+          <Text style={{ fontFamily: 'poppins-medium', fontSize: 18 * PixelRatio.getFontScale() }}>{user && user.name}</Text>
+          <Text style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(1), color: '#A8A8A8', fontFamily: 'poppins-regular', fontSize: 14 * PixelRatio.getFontScale() }}>{user && user.email}</Text>
         </View>
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(12), gap: PixelRatio.getPixelSizeForLayoutSize(7) }}>
           <TouchableOpacity
@@ -222,7 +240,7 @@ const profile = () => {
                   <TouchableOpacity onPress={toggleLogoutOverlay} style={{ backgroundColor: '#F3F3F3', borderRadius: 6, paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4) }} activeOpacity={1}>
                     <Text style={{ color: '#B2B2B2', fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>No, I'm not</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: '#FB5555', borderRadius: 6, paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4) }} activeOpacity={1}>
+                  <TouchableOpacity onPress={handleLogout} style={{ backgroundColor: '#FB5555', borderRadius: 6, paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4) }} activeOpacity={1}>
                     <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 14 * PixelRatio.getFontScale() }}>Yes, I'm sure</Text>
                   </TouchableOpacity>
                 </View>
