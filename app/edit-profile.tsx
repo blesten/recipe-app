@@ -1,4 +1,4 @@
-import { View, Text, Appearance, StatusBar, PixelRatio, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Appearance, StatusBar, PixelRatio, TouchableOpacity, TextInput, Image, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
@@ -6,10 +6,21 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Colors } from '@/constants/Colors'
 import * as ImagePicker from 'expo-image-picker';
+import { doc, DocumentData, updateDoc } from 'firebase/firestore'
+import { getUserData, uploadImage } from '@/utils/function'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
+import { db } from '@/config/firebaseConfig'
 
 const EditProfile = () => {
   const [image, setImage] = useState('')
+  const [dbImage, setDbImage] = useState('')
   const [theme, setTheme] = useState(Appearance.getColorScheme())
+
+  const [name, setName] = useState('')
+
+  const [user, setUser] = useState<DocumentData | null>(null)
+
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter()
 
@@ -23,12 +34,68 @@ const EditProfile = () => {
     setImage(result?.assets![0].uri)
   }
 
+  const handleEditProfile = async() => {
+    setLoading(true)
+
+    try {
+      if (!name) {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Edit profile failed',
+          textBody: 'Please provide user name'
+        })
+        setLoading(false)
+        return
+      }
+
+      let avatarUrl = ''
+      if (image) {
+        avatarUrl = await uploadImage(image, 'User')
+      }
+
+      if (user) {
+        await updateDoc(doc(db, 'User', user.id), {
+          name,
+          avatar: avatarUrl
+        })
+      }
+
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Edit profile succeed',
+        textBody: 'Profile has been updated successfully'
+      })
+
+      router.push('/profile')
+    } catch (err: any) {
+      console.log(err)
+    }
+
+    setLoading(false)
+  }
+
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setTheme(colorScheme)
     })
 
     return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name)
+      setDbImage(user.avatar)
+    }
+  }, [user])
+
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      setUser(result!.data)
+    }
+
+    getUser()
   }, [])
 
   return (
@@ -71,8 +138,16 @@ const EditProfile = () => {
             >
               {
                 image
-                ? <Image source={{ uri: image }} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34) }} />
-                : <Text style={{ color: '#fff', marginTop: PixelRatio.getPixelSizeForLayoutSize(3), fontSize: 36 * PixelRatio.getFontScale(), fontFamily: 'poppins-semibold' }}>JD</Text>
+                ? <Image source={{ uri: image }} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), borderWidth: 1, borderColor: '#DADADA' }} />
+                : (
+                  dbImage
+                  ? <Image source={{ uri: dbImage }} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), borderWidth: 1, borderColor: '#DADADA' }} />
+                  : (
+                    <Text style={{ color: '#fff', marginTop: PixelRatio.getPixelSizeForLayoutSize(3), fontSize: 36 * PixelRatio.getFontScale(), fontFamily: 'poppins-semibold' }}>
+                      {user && (user.name.trim().split(' ').length === 1 ? `${user.name.trim().split(' ')[0][0]}` : `${user.name.trim().split(' ')[0][0]} ${user.name.trim().split(' ')[user.name.trim().split(' ').length - 1][0]}`)}
+                    </Text>
+                  )
+                )
               }
             </View>
           </View>
@@ -85,6 +160,8 @@ const EditProfile = () => {
           <TextInput
             placeholder='Name'
             autoCapitalize='none'
+            value={name}
+            onChangeText={e => setName(e)}
             style={{
               fontFamily: 'poppins-regular',
               borderWidth: 1,
@@ -101,10 +178,14 @@ const EditProfile = () => {
           <TextInput
             placeholder='Email'
             autoCapitalize='none'
+            value={user && user.email}
+            readOnly
             keyboardType='email-address'
             style={{
               fontFamily: 'poppins-regular',
               borderWidth: 1,
+              color: '#A0A0A0',
+              backgroundColor: '#f7f7f7',
               borderColor: '#CCC',
               paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4),
               paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(6),
@@ -124,11 +205,19 @@ const EditProfile = () => {
         >
           <TouchableOpacity
             activeOpacity={1}
+            disabled={loading}
+            onPress={handleEditProfile}
             style={{
               paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4)
             }}
           >
-            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>Save Changes</Text>
+            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>
+              {
+                loading
+                ? <ActivityIndicator color='#fff' />
+                : 'Save Changs'
+              }
+            </Text>
           </TouchableOpacity>
         </LinearGradient>
       </View>

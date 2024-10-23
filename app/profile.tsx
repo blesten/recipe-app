@@ -65,7 +65,17 @@ const profile = () => {
             alignItems: 'center'
           }}
         >
-          <View style={{ width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), backgroundColor: Colors.PRIMARY, borderRadius: 100 }} />
+          <View style={{ width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), backgroundColor: Colors.PRIMARY, borderRadius: 100, alignItems: 'center', justifyContent: 'center' }}>
+            {
+              user && user.avatar
+              ? <Image source={{ uri: user.avatar }} style={{ width: '100%', height: '100%', borderRadius: 100, borderWidth: 1, borderColor: '#DADADA' }} />
+              : (
+                <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', fontSize: 40 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>
+                  {user && (user.name.trim().split(' ').length === 1 ? `${user.name.trim().split(' ')[0][0]}` : `${user.name.trim().split(' ')[0][0]} ${user.name.trim().split(' ')[user.name.trim().split(' ').length - 1][0]}`)}
+                </Text>
+              )
+            }
+          </View>
         </View>
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
           <Text style={{ fontFamily: 'poppins-medium', fontSize: 18 * PixelRatio.getFontScale() }}>{user && user.name}</Text>
