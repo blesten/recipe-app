@@ -56,7 +56,7 @@ const EditProfile = () => {
       if (user) {
         await updateDoc(doc(db, 'User', user.id), {
           name,
-          avatar: avatarUrl
+          avatar: avatarUrl ? avatarUrl : dbImage
         })
       }
 

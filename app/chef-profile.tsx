@@ -1,4 +1,4 @@
-import { View, Text, Appearance, StatusBar, PixelRatio, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Appearance, StatusBar, PixelRatio, TouchableOpacity, TextInput, Image, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
@@ -6,10 +6,23 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Colors } from '@/constants/Colors'
 import * as ImagePicker from 'expo-image-picker';
+import { addDoc, collection, doc, DocumentData, updateDoc } from 'firebase/firestore'
+import { getChefProfileData, getUserData, uploadImage } from '@/utils/function'
+import { db } from '@/config/firebaseConfig'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 
 const ChefProfile = () => {
   const [image, setImage] = useState('')
+  const [userId, setUserId] = useState('')
+  const [dbImage, setDbImage] = useState('')
   const [theme, setTheme] = useState(Appearance.getColorScheme())
+
+  const [chefData, setChefData] = useState<DocumentData | null>(null)
+
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter()
 
@@ -23,12 +36,95 @@ const ChefProfile = () => {
     setImage(result?.assets![0].uri)
   }
 
+  const onSubmit = async() => {
+    setLoading(true)
+
+    if (!name || !description) {
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Profile can\'t be updated',
+        textBody: 'Please provide required field'
+      })
+      setLoading(false)
+      return
+    }
+
+    let avatarUrl = ''
+
+    if (image) {
+      avatarUrl = await uploadImage(image, 'User')
+    }
+
+    try {
+      if (chefData && Object.keys(chefData).length > 0) {
+        await updateDoc(doc(db, 'ChefProfile', chefData.id), {
+          name,
+          description,
+          avatar: avatarUrl ? avatarUrl : dbImage
+        })
+
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Edit profile success',
+          textBody: 'Profile has been updated successfully'
+        })
+
+        router.push('/profile')
+      } else {
+        await addDoc(collection(db, 'ChefProfile'), {
+          user_id: userId,
+          name,
+          description,
+          avatar: avatarUrl
+        })
+
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Profile successfully updated',
+          textBody: 'Chef profile has been updated'
+        })
+
+        router.push('/profile')
+      }
+    } catch (err: any) {
+      console.log(err)
+    }
+
+    setLoading(false)
+  }
+
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setTheme(colorScheme)
     })
 
     return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    if (chefData) {
+      setName(chefData.name)
+      setDescription(chefData.description)
+      setDbImage(chefData.avatar)
+    }
+  }, [chefData])
+
+  useEffect(() => {
+    const getChefProfile = async() => {
+      const result = await getChefProfileData(userId)
+      setChefData(result!.data)
+    }
+
+    getChefProfile()
+  }, [userId])
+
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      setUserId(result!.data.id)
+    }
+
+    getUser()
   }, [])
 
   return (
@@ -72,7 +168,13 @@ const ChefProfile = () => {
               {
                 image
                 ? <Image source={{ uri: image }} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34) }} />
-                : <Text style={{ color: '#fff', marginTop: PixelRatio.getPixelSizeForLayoutSize(3), fontSize: 36 * PixelRatio.getFontScale(), fontFamily: 'poppins-semibold' }}>JD</Text>
+                : dbImage
+                  ? <Image source={{ uri: dbImage}} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34), borderWidth: 1, borderColor: '#DADADA' }} />
+                  : (
+                    <Text style={{ color: '#fff', marginTop: PixelRatio.getPixelSizeForLayoutSize(3), fontSize: 36 * PixelRatio.getFontScale(), fontFamily: 'poppins-semibold' }}>
+                      {chefData && (chefData.name.trim().split(' ').length === 1 ? `${chefData.name.trim().split(' ')[0][0]}` : `${chefData.name.trim().split(' ')[0][0]} ${chefData.name.trim().split(' ')[chefData.name.trim().split(' ').length - 1][0]}`)}
+                    </Text>
+                  )
               }
             </View>
           </View>
@@ -85,6 +187,8 @@ const ChefProfile = () => {
           <TextInput
             placeholder='Name'
             autoCapitalize='none'
+            value={name}
+            onChangeText={e => setName(e)}
             style={{
               fontFamily: 'poppins-regular',
               borderWidth: 1,
@@ -101,6 +205,8 @@ const ChefProfile = () => {
           <TextInput
             placeholder='Description'
             autoCapitalize='none'
+            value={description}
+            onChangeText={e => setDescription(e)}
             style={{
               fontFamily: 'poppins-regular',
               borderWidth: 1,
@@ -123,11 +229,17 @@ const ChefProfile = () => {
         >
           <TouchableOpacity
             activeOpacity={1}
+            onPress={onSubmit}
+            disabled={loading}
             style={{
               paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4)
             }}
           >
-            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>Save Changes</Text>
+            {
+              loading
+              ? <ActivityIndicator color='#fff' />
+              : <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>Save Changes</Text>
+            }
           </TouchableOpacity>
         </LinearGradient>
       </View>

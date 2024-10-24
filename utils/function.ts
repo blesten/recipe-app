@@ -20,6 +20,17 @@ export const getUserData = async() => {
   }
 }
 
+export const getChefProfileData = async(userId: string) => {
+  const getChefProfileQuery = query(collection(db, 'ChefProfile'), where('user_id', '==', userId))
+  const getChefProfileQuerySnapshot = await getDocs(getChefProfileQuery)
+
+  const chefProfileDoc = getChefProfileQuerySnapshot.docs[0]
+
+  return {
+    data: { id: chefProfileDoc?.id, ...chefProfileDoc.data() }
+  }
+}
+
 export const uploadImage = async(fileUri: string, type: string) => {
   const formData = new FormData()
 
