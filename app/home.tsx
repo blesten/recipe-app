@@ -1,17 +1,15 @@
 import { ScrollView, PixelRatio, Appearance, StatusBar, View, BackHandler } from 'react-native'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import PopularDish from '@/components/home/PopularDish'
 import BestChef from '@/components/home/BestChef'
 import Header from '@/components/home/Header'
 import Search from '@/components/home/Search'
 import Tab from '@/components/general/Tab'
-import { useRouter } from 'expo-router'
 
 const Home = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())
-
-  const router = useRouter()
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -21,18 +19,20 @@ const Home = () => {
     return () => subscription.remove()
   }, [])
 
-  useEffect(() => {
-    const backAction = () => {
-      return true
-    }
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    )
-
-    return () => backHandler.remove()
-  }, [router])
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => {
+        return true
+      }
+  
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction
+      )
+  
+      return () => backHandler.remove()
+    }, [])
+  )
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
