@@ -1,7 +1,7 @@
-import { View, Text, PixelRatio } from 'react-native'
+import { View, Text, Image, PixelRatio } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Colors } from '@/constants/Colors'
-import { getUserData } from '@/utils/function'
+import { getGreeting, getUserData } from '@/utils/function'
 import { useEffect, useState } from 'react'
 import { DocumentData } from 'firebase/firestore'
 
@@ -31,7 +31,7 @@ const Header = () => {
           gap: PixelRatio.getPixelSizeForLayoutSize(1.3)
         }}
       >
-        <Text style={{ color: '#A5A5A5', fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale() }}>Good morning,</Text>
+        <Text style={{ color: '#A5A5A5', fontFamily: 'poppins-regular', fontSize: 15 * PixelRatio.getFontScale() }}>{getGreeting()},</Text>
         <Text style={{ fontFamily: 'poppins-semibold', fontSize: 24 * PixelRatio.getFontScale() }}>
           {user && user.name}
         </Text>
@@ -47,11 +47,19 @@ const Header = () => {
             width: PixelRatio.getPixelSizeForLayoutSize(17),
             height: PixelRatio.getPixelSizeForLayoutSize(17),
             justifyContent: 'center',
-            paddingTop: PixelRatio.getPixelSizeForLayoutSize(1),
+            paddingTop: user && user.avatar ? 0 : PixelRatio.getPixelSizeForLayoutSize(1),
             alignItems: 'center'
           }}
         >
-          <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 20 * PixelRatio.getFontScale(), letterSpacing: 1 }}>JD</Text> 
+          {
+            user && user.avatar
+            ? <Image source={{ uri: user.avatar }} style={{ width: PixelRatio.getPixelSizeForLayoutSize(17), height: PixelRatio.getPixelSizeForLayoutSize(17), borderRadius: 8, borderWidth: 1, borderColor: '#DADADA' }} />
+            : (
+              <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 20 * PixelRatio.getFontScale(), letterSpacing: 1 }}>
+                {user && (user.name.trim().split(' ').length === 1 ? `${user.name.trim().split(' ')[0][0]}` : `${user.name.trim().split(' ')[0][0]} ${user.name.trim().split(' ')[user.name.trim().split(' ').length - 1][0]}`)}
+              </Text> 
+            )
+          }
         </View>
       </LinearGradient>
     </View>

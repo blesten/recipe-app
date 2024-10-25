@@ -21,13 +21,17 @@ export const getUserData = async() => {
 }
 
 export const getChefProfileData = async(userId: string) => {
-  const getChefProfileQuery = query(collection(db, 'ChefProfile'), where('user_id', '==', userId))
-  const getChefProfileQuerySnapshot = await getDocs(getChefProfileQuery)
+  try {
+    const getChefProfileQuery = query(collection(db, 'ChefProfile'), where('user_id', '==', userId))
+    const getChefProfileQuerySnapshot = await getDocs(getChefProfileQuery)
 
-  const chefProfileDoc = getChefProfileQuerySnapshot.docs[0]
+    const chefProfileDoc = getChefProfileQuerySnapshot.docs[0]
 
-  return {
-    data: { id: chefProfileDoc?.id, ...chefProfileDoc.data() }
+    return {
+      data: { id: chefProfileDoc?.id, ...chefProfileDoc.data() }
+    }
+  } catch (err: any) {
+    console.log(err)
   }
 }
 
@@ -64,5 +68,19 @@ export const uploadImage = async(fileUri: string, type: string) => {
   } catch (err) {
     console.log('Error uploading image: ', err)
     return null
+  }
+}
+
+export const getGreeting = () => {
+  const currentHour = new Date().getHours()
+
+  if (currentHour >= 5 && currentHour < 12) {
+    return 'Good Morning'
+  } else if (currentHour >= 12 && currentHour < 17) {
+    return 'Good Afternoon'
+  } else if (currentHour >= 17 && currentHour < 21) {
+    return 'Good Evening'
+  } else {
+    return 'Good Night'
   }
 }

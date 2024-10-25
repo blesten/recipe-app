@@ -1,11 +1,15 @@
 import { Colors } from '@/constants/Colors'
+import { getChefProfileData, getUserData } from '@/utils/function'
 import { useRoute } from '@react-navigation/native'
 import { Href, useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
+import { DocumentData } from 'firebase/firestore'
+import { useEffect, useRef, useState } from 'react'
 import { View, Image, PixelRatio, Text, TouchableOpacity, Dimensions, Animated, TouchableWithoutFeedback } from 'react-native'
 
 const Tab = () => {
   const [isAddClicked, setIsAddClicked] = useState(false)
+
+  const [user, setUser] = useState<DocumentData | null>(null)
 
   const screenHeight = Dimensions.get('window').height
   const slideAnim = useRef(new Animated.Value(screenHeight)).current
@@ -35,6 +39,28 @@ const Tab = () => {
       }).start();
     }
   }
+
+  const handleRedirectAdd = async() => {
+    if (!user) return handlePressAdd()
+
+    const chefProfile = await getChefProfileData(user.id)
+  
+    if (chefProfile) {
+      router.push('/add-recipe');
+    } else {
+      handlePressAdd();
+    }
+  }
+
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      if (result)
+        setUser(result.data)
+    }
+
+    getUser()
+  }, [])
   
   return (
     <>
@@ -77,7 +103,7 @@ const Tab = () => {
               : <Image source={require('./../../assets/images/icons/grayscale/chart.png')} />
             }
           </TouchableOpacity>
-          <TouchableOpacity onPress={handlePressAdd} activeOpacity={1}>
+          <TouchableOpacity onPress={() => handleRedirectAdd()} activeOpacity={1}>
             {
               name === 'add-recipe'
               ? (
