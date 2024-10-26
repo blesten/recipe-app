@@ -1,9 +1,14 @@
-import { View, Text, PixelRatio } from 'react-native'
+import { Text, PixelRatio, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useRouter } from 'expo-router'
 
 const Search = () => {
+  const router = useRouter()
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={() => router.push('/search')}
+      activeOpacity={1}
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -18,7 +23,7 @@ const Search = () => {
     >
       <Ionicons name='search' size={PixelRatio.getPixelSizeForLayoutSize(9)} color='#A6A6A6' />
       <Text style={{ fontFamily: 'poppins-medium', color: '#A6A6A6' }}>Ayam tinoransak</Text>
-    </View>
+    </TouchableOpacity>
   )
 }
 
