@@ -3,6 +3,21 @@ import * as SecureStore from 'expo-secure-store'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_DISH_PRESET, CLOUDINARY_USER_PRESET } from './constant'
 
+interface SavedDish {
+  id: string
+  userId: string
+  dishId: string
+}
+
+interface Dish {
+  id: string
+  name: string
+}
+
+interface PopulatedSavedDish extends SavedDish {
+  dishData: Dish | null
+}
+
 export const getUserData = async() => {
   try {
     const email = await SecureStore.getItemAsync('isAuth')
@@ -30,6 +45,43 @@ export const getChefProfileData = async(userId: string) => {
     return {
       data: { id: chefProfileDoc?.id, ...chefProfileDoc.data() }
     }
+  } catch (err: any) {
+    console.log(err)
+  }
+}
+
+export const getSavedDish = async(userId: string) => {
+  try {
+    const savedDishQuery = query(collection(db, 'Saved'), where('userId', '==', userId))
+    const savedDishSnapshot = await getDocs(savedDishQuery)
+
+    const savedDishes: SavedDish[] = []
+
+    savedDishSnapshot.forEach(doc => {
+      const savedDishData: SavedDish = { id: doc.id, ...doc.data() } as SavedDish
+      savedDishes.push(savedDishData)
+    })
+
+    const dishIds = savedDishes.map(dish => dish.dishId)
+
+    if (dishIds.length === 0) {
+      return savedDishes.map(dish => ({ ...dish, dishData: null }))
+    }
+
+    const dishQuery = query(collection(db, 'Dish'), where('__name__', 'in', dishIds))
+    const dishSnapshot = await getDocs(dishQuery)
+
+    const dishMap: Record<string, Dish> = {}
+    dishSnapshot.forEach(doc => {
+      dishMap[doc.id] = { ...doc.data() } as Dish
+    })
+
+    const populatedDishes: PopulatedSavedDish[] = savedDishes.map(savedDish => ({
+      ...savedDish,
+      dishData: dishMap[savedDish.dishId] || null
+    }))
+
+    return populatedDishes
   } catch (err: any) {
     console.log(err)
   }
