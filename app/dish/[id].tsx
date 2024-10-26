@@ -9,8 +9,14 @@ import Review from '@/components/dish/Review'
 import Header from '@/components/dish/Header'
 import Detail from '@/components/dish/Detail'
 import Rate from '@/components/dish/Rate'
+import { useLocalSearchParams } from 'expo-router'
+import { DocumentData } from 'firebase/firestore'
+import { getDishById } from '@/utils/function'
 
 const DishDetail = () => {
+  const { id } = useLocalSearchParams()
+  const [dishDetail, setDishDetail] = useState<DocumentData | null>(null)
+
   const [theme, setTheme] = useState(Appearance.getColorScheme())
 
   const [isReviewsClicked, setIsReviewsClicked] = useState(false)
@@ -60,16 +66,26 @@ const DishDetail = () => {
 
     return () => subscription.remove()
   }, [])
+  
+  useEffect(() => {
+    const getDishData = async(id: string) => {
+      const result = await getDishById(id)
+      setDishDetail(result)
+    }
+
+    if (id)
+      getDishData(id as string)
+  }, [id])
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBar backgroundColor={theme === 'dark' ? '#000' : '#fff'} />
-      <Header />
-      <Detail toggleReviewsOverlay={toggleReviewsOverlay} />
+      <Header dish={dishDetail} />
+      <Detail dish={dishDetail} toggleReviewsOverlay={toggleReviewsOverlay} />
       <View style={{ flex: 1 }}>
         <ScrollView>
-          <Ingredients />
-          <Instruction />
+          <Ingredients dish={dishDetail} />
+          <Instruction dish={dishDetail} />
           <LinearGradient
             colors={[Colors.PRIMARY, Colors.SECONDARY]}
             start={{ x: 0, y: 1 }}

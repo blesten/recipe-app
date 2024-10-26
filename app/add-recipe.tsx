@@ -204,8 +204,9 @@ const AddRecipe = () => {
         image: imageUrl,
         ingredients,
         instruction: cookingInstruction,
-        chefId: userData?.data.id,
-        userId: chefData?.data.id
+        createdAt: new Date(),
+        chefId: chefData?.data.id,
+        userId: userData?.data.id
       })
 
       Toast.show({

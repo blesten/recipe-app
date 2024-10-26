@@ -1,6 +1,6 @@
 import { db } from '@/config/firebaseConfig'
 import * as SecureStore from 'expo-secure-store'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_DISH_PRESET, CLOUDINARY_USER_PRESET } from './constant'
 
 export const getUserData = async() => {
@@ -46,6 +46,56 @@ export const getMasterIngredients = async() => {
   })
 
   return masterIngredients
+}
+
+export const getIngredientByTitle = async(id: string) => {
+  const ingredientQuery = query(collection(db, 'Ingredient'), where('title', '==', id))
+  const ingredientQuerySnapshot = await getDocs(ingredientQuery)
+  
+  const ingredientDoc = ingredientQuerySnapshot.docs[0]
+
+  return ingredientDoc.data()
+}
+
+export const getDishById = async(id: string) => {
+  const dishRef = doc(db, 'Dish', id)
+  const dishSnapshot = await getDoc(dishRef)
+
+  if (!dishSnapshot.exists()) {
+    return null
+  }
+
+  return {
+    id: dishSnapshot.id,
+    ...dishSnapshot.data()
+  }
+}
+
+export const getCheftById = async(id: string) => {
+  const chefRef = doc(db, 'ChefProfile', id)
+  const chefSnapshot = await getDoc(chefRef)
+
+  if (!chefSnapshot.exists()) {
+    return null
+  }
+
+  return {
+    id: chefSnapshot.id,
+    ...chefSnapshot.data()
+  }
+}
+
+export const getDishSavedStatus = async(userId: string, dishId: string) => {
+  const statusQuery = query(collection(db, 'Saved'), where('dishId', '==', dishId), where('userId', '==', userId))
+  const statusQuerySnapshot = await getDocs(statusQuery)
+
+  const statusDocs = statusQuerySnapshot.docs[0]
+
+  if (statusDocs.exists()) {
+    return true
+  }
+
+  return false
 }
 
 export const uploadImage = async(fileUri: string, type: string) => {

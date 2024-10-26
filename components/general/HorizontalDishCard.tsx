@@ -2,9 +2,17 @@ import { Colors } from '@/constants/Colors'
 import { Ionicons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
-import { View, Text, TouchableOpacity, PixelRatio } from 'react-native'
+import { View, Image, Text, TouchableOpacity, PixelRatio } from 'react-native'
+import moment from 'moment'
 
-const HorizontalDishCard = () => {
+interface IProps {
+  id: string
+  image: string
+  title: string
+  createdAt: any
+}
+
+const HorizontalDishCard = ({ id, image, title, createdAt }: IProps) => {
   const router = useRouter()
 
   return (
@@ -31,7 +39,7 @@ const HorizontalDishCard = () => {
           borderRadius: 10
         }}
       >
-
+        <Image source={{ uri: image }} style={{ width: '100%', height: '100%', borderRadius: 10, borderWidth: 1, borderColor: '#DEDEDE' }} />
       </View>
       <View
         style={{
@@ -42,7 +50,7 @@ const HorizontalDishCard = () => {
         }}
       >
         <View>
-          <Text style={{ fontFamily: 'poppins-medium', color: Colors.PRIMARY, fontSize: 16 * PixelRatio.getFontScale() }}>Greek Salad</Text>
+          <Text style={{ fontFamily: 'poppins-medium', color: Colors.PRIMARY, fontSize: 16 * PixelRatio.getFontScale() }}>{title}</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -63,7 +71,7 @@ const HorizontalDishCard = () => {
             </View>
             <Text style={{ fontFamily: 'poppins-regular', fontSize: 10 * PixelRatio.getFontScale(), color: '#B3B3B3' }}>(20 reviews)</Text>
           </View>
-          <TouchableOpacity style={{ marginTop: 5 }} activeOpacity={1} onPress={() => router.push('/dish/123')}>
+          <TouchableOpacity style={{ marginTop: 5 }} activeOpacity={1} onPress={() => router.push(`/dish/${id}`)}>
             <View
               style={{
                 borderRadius: 50,
@@ -91,7 +99,7 @@ const HorizontalDishCard = () => {
             </View>
           </TouchableOpacity>
         </View>
-        <Text style={{ color: '#797979', fontFamily: 'poppins-regular', fontSize: 9 * PixelRatio.getFontScale() }}>3 months ago</Text>
+        <Text style={{ color: '#797979', fontFamily: 'poppins-regular', fontSize: 9 * PixelRatio.getFontScale() }}>{moment(new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000)).fromNow()}</Text>
       </View>
     </View>
   )

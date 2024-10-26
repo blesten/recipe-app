@@ -72,7 +72,7 @@ const Search = () => {
             backgroundColor: '#EFEFEF',
             borderWidth: 1,
             borderColor: '#CCC',
-            paddingVertical: PixelRatio.getPixelSizeForLayoutSize(5),
+            paddingVertical: PixelRatio.getPixelSizeForLayoutSize(4),
             borderRadius: 7,
             marginTop: PixelRatio.getPixelSizeForLayoutSize(7),
             paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(6)
@@ -82,6 +82,7 @@ const Search = () => {
           <TextInput
             placeholder='Ayam tinoransak'
             value={searchValue}
+            autoFocus
             onChangeText={e => setSearchValue(e)}
             style={{
               fontFamily: 'poppins-regular',
@@ -109,6 +110,10 @@ const Search = () => {
                         dishes.map(item => (
                           <HorizontalDishCard
                             key={item.id}
+                            id={item.id}
+                            title={item.title}
+                            image={item.image}
+                            createdAt={item.createdAt}
                           />
                         ))
                       }
