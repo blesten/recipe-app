@@ -35,6 +35,19 @@ export const getChefProfileData = async(userId: string) => {
   }
 }
 
+export const getMasterIngredients = async() => {
+  let masterIngredients: any[] = []
+
+  const ingredientsQuery = query(collection(db, 'Ingredient'))
+  const ingredientsQuerySnapshot = await getDocs(ingredientsQuery)
+  
+  ingredientsQuerySnapshot.forEach(doc => {
+    masterIngredients = [...masterIngredients, { value: doc?.data().title, label: doc?.data().title, icon: doc?.data().icon }]
+  })
+
+  return masterIngredients
+}
+
 export const uploadImage = async(fileUri: string, type: string) => {
   const formData = new FormData()
 

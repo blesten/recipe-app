@@ -1,20 +1,19 @@
 import { PixelRatio, View } from 'react-native'
-import { useState } from 'react'
 import { Dropdown } from 'react-native-element-dropdown'
+import { DocumentData } from 'firebase/firestore'
+import { useState } from 'react'
 
-const data = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-  { label: 'Item 5', value: '5' },
-  { label: 'Item 6', value: '6' },
-  { label: 'Item 7', value: '7' },
-  { label: 'Item 8', value: '8' },
-]
+interface IProps {
+  data: DocumentData[]
+  id: number
+  ingredients: DocumentData[]
+  onChange: (e: string, id: number) => void
+}
 
-const DropdownComponent = () => {
-  const [value, setValue] = useState('')
+const DropdownComponent = ({ data, ingredients, id, onChange }: IProps) => {
+  const formattedOnChange = (item: DocumentData) => {
+    onChange(item.value, id)
+  }
 
   return (
     <View
@@ -31,14 +30,12 @@ const DropdownComponent = () => {
         selectedTextStyle={{ fontFamily: 'poppins-regular' }}
         data={data} 
         search={false}
-        labelField="label"
-        valueField="value"
-        placeholder='Tomato'
-        searchPlaceholder="Search..."
-        value={value}
-        onChange={item => {
-          setValue(item.value)
-        }}
+        labelField='label'
+        valueField='value'
+        placeholder='Select'
+        value={ingredients[id].id}
+        searchPlaceholder='Search...'
+        onChange={item => formattedOnChange(item)}
       />
     </View>
   )
