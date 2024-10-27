@@ -75,7 +75,8 @@ const ChefProfile = () => {
           user_id: userId,
           name,
           description,
-          avatar: avatarUrl
+          avatar: avatarUrl,
+          createdAt: new Date()
         })
 
         Toast.show({

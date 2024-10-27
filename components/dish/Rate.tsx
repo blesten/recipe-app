@@ -1,13 +1,97 @@
+import { db } from '@/config/firebaseConfig'
 import { Colors } from '@/constants/Colors'
 import { LinearGradient } from 'expo-linear-gradient'
-import { View, Text, TouchableWithoutFeedback, Image, Animated, TextInput, PixelRatio, TouchableOpacity } from 'react-native'
+import { addDoc, collection } from 'firebase/firestore'
+import { useState } from 'react'
+import { View, Text, TouchableWithoutFeedback, Image, Animated, TextInput, PixelRatio, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 
 interface IProps {
+  setIsComplete: React.Dispatch<React.SetStateAction<boolean>>
+  userId: string
+  dishId: string
   toggleCompleteBtnOverlay: () => void
   slideAnim: any
 }
 
-const Rate = ({ toggleCompleteBtnOverlay, slideAnim }: IProps) => {
+const Rate = ({ setIsComplete, userId, dishId, toggleCompleteBtnOverlay, slideAnim }: IProps) => {
+  const [star, setStar] = useState(0)
+  const [description, setDescription] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleClickStar = (kind: string, idx: number) => {
+    const formattedIdx = idx + 1
+    if (kind === 'colored') {
+      setStar(formattedIdx)
+    } else {
+      setStar(star + formattedIdx)
+    }
+  }
+
+  const handleSubmitRating = async() => {
+    setLoading(true)
+    if (star < 1) {
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Field was not filled completely',
+        textBody: 'Please provide dish rating'
+      })
+      setLoading(false)
+      return
+    }
+
+    if (!description) {
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Field was not filled completely',
+        textBody: 'Please provide rating description'
+      })
+      setLoading(false)
+      return
+    }
+
+    await addDoc(collection(db, 'Rating'), {
+      userId,
+      dishId,
+      star,
+      description,
+      createdAt: new Date()
+    })
+
+    await addDoc(collection(db, 'Completed'), {
+      userId,
+      dishId,
+    })
+    
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Dish marked as complete',
+      textBody: 'Congratulation on completing your dish'
+    })
+
+    setIsComplete(true)
+
+    toggleCompleteBtnOverlay()
+    setLoading(false)
+  }
+
+  const handleSkip = async() => {
+    await addDoc(collection(db, 'Completed'), {
+      userId,
+      dishId,
+    })
+    
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Dish marked as complete',
+      textBody: 'Congratulation on completing your dish'
+    })
+
+    setIsComplete(true)
+
+    toggleCompleteBtnOverlay()
+  }
+
   return (
     <TouchableWithoutFeedback onPress={toggleCompleteBtnOverlay}>
       <View
@@ -36,13 +120,24 @@ const Rate = ({ toggleCompleteBtnOverlay, slideAnim }: IProps) => {
           >
             <Image source={require('./../../assets/images/review.png')} />
             <View style={{ flexDirection: 'row', marginTop: PixelRatio.getPixelSizeForLayoutSize(8) }}>
-              <Image source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
-              <Image source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
-              <Image source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
-              <Image source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
-              <Image source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
+              {
+                Array.from({ length: star }).map((_, idx) => (
+                  <TouchableOpacity onPress={() => handleClickStar('colored', idx)} activeOpacity={1}>
+                    <Image key={idx} source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 45, height: 45 }} />
+                  </TouchableOpacity>
+                ))
+              }
+              {
+                Array.from({ length: 5 - star }).map((_, idx) => (
+                  <TouchableOpacity onPress={() => handleClickStar('grayscale', idx)} activeOpacity={1}>
+                    <Image key={idx} source={require('./../../assets/images/icons/grayscale/star.png')} style={{ width: 45, height: 45 }} />
+                  </TouchableOpacity>
+                ))
+              }
             </View>
             <TextInput
+              value={description}
+              onChangeText={e => setDescription(e)}
               placeholder='Recipe works like a charm 😊'
               style={{
                 borderWidth: 1,
@@ -69,11 +164,17 @@ const Rate = ({ toggleCompleteBtnOverlay, slideAnim }: IProps) => {
                 paddingVertical: PixelRatio.getPixelSizeForLayoutSize(3)
               }}
             >
-              <TouchableOpacity activeOpacity={1}>
-                <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', textAlign: 'center' }}>Submit</Text>
+              <TouchableOpacity disabled={loading} onPress={handleSubmitRating} activeOpacity={1}>
+                <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', textAlign: 'center' }}>
+                  {
+                    loading
+                    ? <ActivityIndicator color='#fff' />
+                    : 'Submit'
+                  }
+                </Text>
               </TouchableOpacity>
             </LinearGradient>
-            <TouchableOpacity activeOpacity={1} style={{ marginTop: 8 }}>
+            <TouchableOpacity onPress={handleSkip} activeOpacity={1} style={{ marginTop: 8 }}>
               <Text style={{ color: '#A0A0A0', fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale() }}>Skip for now</Text>
             </TouchableOpacity>
           </Animated.View>

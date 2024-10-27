@@ -163,6 +163,19 @@ export const getDishSavedStatus = async(userId: string, dishId: string) => {
   return false
 }
 
+export const getCompletionStatus = async(userId: string, dishId: string) => {
+  const statusQuery = query(collection(db, 'Completed'), where('userId', '==', userId), where('dishId', '==', dishId))
+  const statusQuerySnapshot = await getDocs(statusQuery)
+
+  const statusDocs = statusQuerySnapshot.docs[0]
+
+  if (statusDocs.exists()) {
+    return true
+  }
+
+  return false
+}
+
 export const uploadImage = async(fileUri: string, type: string) => {
   const formData = new FormData()
 

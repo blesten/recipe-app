@@ -11,16 +11,19 @@ import Detail from '@/components/dish/Detail'
 import Rate from '@/components/dish/Rate'
 import { useLocalSearchParams } from 'expo-router'
 import { DocumentData } from 'firebase/firestore'
-import { getDishById } from '@/utils/function'
+import { getCompletionStatus, getDishById, getUserData } from '@/utils/function'
 
 const DishDetail = () => {
   const { id } = useLocalSearchParams()
   const [dishDetail, setDishDetail] = useState<DocumentData | null>(null)
+  const [userId, setUserId] = useState('')
 
   const [theme, setTheme] = useState(Appearance.getColorScheme())
 
   const [isReviewsClicked, setIsReviewsClicked] = useState(false)
   const [isCompleteBtnClicked, setIsCompleteBtnClicked] = useState(false)
+
+  const [isComplete, setIsComplete] = useState(false)
 
   const screenHeight = Dimensions.get('window').height
   const slideAnim = useRef(new Animated.Value(screenHeight)).current
@@ -77,6 +80,25 @@ const DishDetail = () => {
       getDishData(id as string)
   }, [id])
 
+  useEffect(() => {
+    const getUser = async() => {
+      const result = await getUserData()
+      if (result)
+        setUserId(result.data.id)
+    }
+
+    getUser()
+  }, [])
+
+  useEffect(() => {
+    const getStatus = async() => {
+      const result = await getCompletionStatus(userId, id as string)
+      setIsComplete(result)
+    }
+
+    getStatus()
+  }, [userId, id])
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBar backgroundColor={theme === 'dark' ? '#000' : '#fff'} />
@@ -87,7 +109,7 @@ const DishDetail = () => {
           <Ingredients dish={dishDetail} />
           <Instruction dish={dishDetail} />
           <LinearGradient
-            colors={[Colors.PRIMARY, Colors.SECONDARY]}
+            colors={isComplete ? ['#E0E0E0', '#E0E0E0'] : [Colors.PRIMARY, Colors.SECONDARY]}
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
             style={{
@@ -97,8 +119,14 @@ const DishDetail = () => {
               marginBottom: PixelRatio.getPixelSizeForLayoutSize(10)
             }}
           >
-            <TouchableOpacity activeOpacity={1} onPress={toggleCompleteBtnOverlay}>
-              <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', textAlign: 'center' }}>Mark as Complete</Text>
+            <TouchableOpacity disabled={isComplete} activeOpacity={1} onPress={toggleCompleteBtnOverlay}>
+              <Text style={{ fontFamily: 'poppins-semibold', color: isComplete ? '#A0A0A0' : '#fff', textAlign: 'center' }}>
+                {
+                  isComplete
+                  ? 'Dish marked as completed'
+                  : 'Mark as Complete'
+                }
+              </Text>
             </TouchableOpacity>
           </LinearGradient>
         </ScrollView>
@@ -107,6 +135,9 @@ const DishDetail = () => {
       {
         isCompleteBtnClicked &&
         <Rate
+          setIsComplete={setIsComplete}
+          userId={userId}
+          dishId={id as string}
           toggleCompleteBtnOverlay={toggleCompleteBtnOverlay}
           slideAnim={slideAnim}
         />

@@ -288,7 +288,7 @@ const AddRecipe = () => {
               >
                 {
                   image
-                  ? <Image source={{ uri: image }} style={{ borderRadius: 100, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34) }} />
+                  ? <Image source={{ uri: image }} style={{ borderRadius: 10, width: PixelRatio.getPixelSizeForLayoutSize(34), height: PixelRatio.getPixelSizeForLayoutSize(34) }} />
                   : <FontAwesome6 name='bowl-food' size={PixelRatio.getPixelSizeForLayoutSize(18)} color='#A0A0A0' />
                 }
               </View>

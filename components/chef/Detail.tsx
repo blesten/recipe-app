@@ -8,7 +8,6 @@ interface IProps {
 }
 
 const Detail = ({ chef, dishes }: IProps) => {
-
   return (
     <View style={{ backgroundColor: '#fff', borderRadius: 30, padding: PixelRatio.getPixelSizeForLayoutSize(8), marginTop: -60, elevation: 2 }}>
       <View>
@@ -35,7 +34,13 @@ const Detail = ({ chef, dishes }: IProps) => {
           </View>
           <View style={{ gap: 3 }}>
             <Text style={{ fontFamily: 'poppins-semibold', fontSize: 17 * PixelRatio.getFontScale() }}>Chef {chef && chef.name}</Text>
-            <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#979797' }}>24 October 2024</Text>
+            <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#979797' }}>
+              {chef && new Date(chef.createdAt.seconds * 1000).toLocaleString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              })}
+            </Text>
           </View>
         </View>
         <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(7) }}>
