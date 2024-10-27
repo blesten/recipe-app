@@ -50,6 +50,19 @@ export const getChefProfileData = async(userId: string) => {
   }
 }
 
+export const getChefDishes = async(chefId: string) => {
+  let dishes: any[] = []
+
+  const dishesQuery = query(collection(db, 'Dish'), where('chefId', '==', chefId))
+  const dishesQuerySnapshot = await getDocs(dishesQuery)
+
+  dishesQuerySnapshot.forEach(doc => {
+    dishes = [...dishes, { id: doc.id, ...doc.data() }]
+  })
+
+  return dishes
+}
+
 export const getSavedDish = async(userId: string) => {
   try {
     const savedDishQuery = query(collection(db, 'Saved'), where('userId', '==', userId))

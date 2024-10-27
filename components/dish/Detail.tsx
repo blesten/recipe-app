@@ -28,7 +28,7 @@ const Detail = ({ toggleReviewsOverlay, dish }: IProps) => {
     <View style={{ backgroundColor: '#fff', marginTop: -60, borderRadius: 25, paddingHorizontal: 10, paddingVertical: 16, elevation: 3, marginHorizontal: PixelRatio.getPixelSizeForLayoutSize(10), justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontFamily: 'poppins-semibold', fontSize: 18 * PixelRatio.getFontScale() }}>{dish && dish.title}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 24, marginTop: PixelRatio.getPixelSizeForLayoutSize(5) }}>
-        <TouchableOpacity activeOpacity={1} onPress={() => router.push('/chef/123')} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <TouchableOpacity activeOpacity={1} onPress={() => router.push(`/chef/${dish && dish.chefId}`)} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <View
             style={{
               borderRadius: 100,
