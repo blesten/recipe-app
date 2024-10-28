@@ -1,6 +1,8 @@
 import { View, Text, Image, PixelRatio } from 'react-native'
 import { Colors } from '@/constants/Colors'
 import { DocumentData } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { getRatingByChef } from '@/utils/function'
 
 interface IProps {
   chef: DocumentData | null
@@ -8,6 +10,18 @@ interface IProps {
 }
 
 const Detail = ({ chef, dishes }: IProps) => {
+  const [rating, setRating] = useState<any[]>([])
+
+  useEffect(() => {
+    const getRating = async(id: string) => {
+      const result = await getRatingByChef(id)
+      setRating(result)
+    }
+
+    if (chef)
+      getRating(chef.id)
+  }, [chef])
+
   return (
     <View style={{ backgroundColor: '#fff', borderRadius: 30, padding: PixelRatio.getPixelSizeForLayoutSize(8), marginTop: -60, elevation: 2 }}>
       <View>
@@ -52,9 +66,27 @@ const Detail = ({ chef, dishes }: IProps) => {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Image source={require('./../../assets/images/icons/colored/star.png')} />
-            <Text style={{ fontFamily: 'poppins-semibold', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.5) }}>4.8</Text>
+            <Text style={{ fontFamily: 'poppins-semibold', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.5) }}>
+              {
+                rating.length > 0
+                ? (
+                  <>
+                    {
+                      ((rating.reduce((sum, rating) => sum + rating.star, 0)) / rating.length).toFixed(1)
+                    }
+                  </>
+                )
+                : 'N/A'
+              }
+            </Text>
           </View>
-          <Text style={{ fontFamily: 'poppins-regular', color: '#A0A0A0', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.6) }}>(200 reviews)</Text>
+          <Text style={{ fontFamily: 'poppins-regular', color: '#A0A0A0', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.6) }}>
+            {
+              rating.length > 0
+              ? `(${rating.length} ${rating.length > 1 ? 'reviews' : 'review'})`
+              : ''
+            }
+          </Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 9, alignItems: 'center' }}>
           <Image source={require('./../../assets/images/icons/colored/dish.png')} />

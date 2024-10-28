@@ -149,6 +149,7 @@ const DishDetail = () => {
           setIsComplete={setIsComplete}
           userId={userId}
           dishId={id as string}
+          chefId={dishDetail && dishDetail.chefId}
           toggleCompleteBtnOverlay={toggleCompleteBtnOverlay}
           slideAnim={slideAnim}
         />

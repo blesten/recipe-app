@@ -100,6 +100,39 @@ export const getSavedDish = async(userId: string) => {
   }
 }
 
+export const getCompletedDish = async(userId: string) => {
+  const completedDishQuery = query(collection(db, 'Completed'), where('userId', '==', userId))
+  const completedDishSnapshot = await getDocs(completedDishQuery)
+
+  const completedDishes: SavedDish[] = []
+
+  completedDishSnapshot.forEach(doc => {
+    const completedDishData: SavedDish = { id: doc.id, ...doc.data() } as SavedDish
+    completedDishes.push(completedDishData)
+  })
+
+  const dishIds = completedDishes.map(dish => dish.dishId)
+
+  if (dishIds.length === 0) {
+    return completedDishes.map(dish => ({ ...dish, dishData: null }))
+  }
+
+  const dishQuery = query(collection(db, 'Dish'), where('__name__', 'in', dishIds))
+  const dishSnapshot = await getDocs(dishQuery)
+
+  const dishMap: Record<string, Dish> = {}
+  dishSnapshot.forEach(doc => {
+    dishMap[doc.id] = { ...doc.data() } as Dish
+  })
+
+  const populatedDishes: PopulatedSavedDish[] = completedDishes.map(completedDish => ({
+    ...completedDish,
+    dishData: dishMap[completedDish.dishId] || null
+  }))
+
+  return populatedDishes
+}
+
 export const getMasterIngredients = async() => {
   let masterIngredients: any[] = []
 
@@ -193,6 +226,19 @@ export const getRatingByDish = async(dishId: string) => {
   }
 
   rating.sort((a, b) => b.star - a.star)
+
+  return rating
+}
+
+export const getRatingByChef = async(chefId: string) => {
+  let rating: any[] = []
+
+  const ratingQuery = query(collection(db, 'Rating'), where('chefId', '==', chefId))
+  const ratingQuerySnapshot = await getDocs(ratingQuery)
+
+  ratingQuerySnapshot.forEach(doc => {
+    rating = [...rating, { id: doc.id, ...doc.data() }]
+  })
 
   return rating
 }

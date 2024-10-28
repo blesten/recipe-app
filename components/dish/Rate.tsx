@@ -9,12 +9,13 @@ import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 interface IProps {
   setIsComplete: React.Dispatch<React.SetStateAction<boolean>>
   userId: string
+  chefId: string
   dishId: string
   toggleCompleteBtnOverlay: () => void
   slideAnim: any
 }
 
-const Rate = ({ setIsComplete, userId, dishId, toggleCompleteBtnOverlay, slideAnim }: IProps) => {
+const Rate = ({ setIsComplete, userId, chefId, dishId, toggleCompleteBtnOverlay, slideAnim }: IProps) => {
   const [star, setStar] = useState(0)
   const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
@@ -55,6 +56,7 @@ const Rate = ({ setIsComplete, userId, dishId, toggleCompleteBtnOverlay, slideAn
       dishId,
       star,
       description,
+      chefId,
       createdAt: new Date()
     })
 

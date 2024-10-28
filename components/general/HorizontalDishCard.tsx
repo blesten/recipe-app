@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
 import { View, Image, Text, TouchableOpacity, PixelRatio } from 'react-native'
 import moment from 'moment'
+import { useEffect, useState } from 'react'
+import { getRatingByDish } from '@/utils/function'
 
 interface IProps {
   id: string
@@ -14,6 +16,18 @@ interface IProps {
 
 const HorizontalDishCard = ({ id, image, title, createdAt }: IProps) => {
   const router = useRouter()
+
+  const [rating, setRating] = useState<any[]>([])
+
+  useEffect(() => {
+    const getRating = async(id: string) => {
+      const result = await getRatingByDish(id)
+      setRating(result)
+    }
+
+    if (id)
+      getRating(id)
+  }, [id])
 
   return (
     <View
@@ -67,9 +81,27 @@ const HorizontalDishCard = ({ id, image, title, createdAt }: IProps) => {
               }}
             >
               <Ionicons name='star' size={14} color='#FFA621' style={{ marginTop: -2 }} />
-              <Text style={{ fontFamily: 'poppins-semibold', fontSize: 10 * PixelRatio.getFontScale() }}>4.9</Text>
+              <Text style={{ fontFamily: 'poppins-semibold', fontSize: 10 * PixelRatio.getFontScale() }}>
+                {
+                  rating.length > 0
+                  ? (
+                    <>
+                      {
+                        ((rating.reduce((sum, rating) => sum + rating.star, 0)) / rating.length).toFixed(1)
+                      }
+                    </>
+                  )
+                  : 'N/A'
+                }
+              </Text>
             </View>
-            <Text style={{ fontFamily: 'poppins-regular', fontSize: 10 * PixelRatio.getFontScale(), color: '#B3B3B3' }}>(20 reviews)</Text>
+            <Text style={{ fontFamily: 'poppins-regular', fontSize: 10 * PixelRatio.getFontScale(), color: '#B3B3B3' }}>
+              {
+                rating.length > 0
+                ? `(${rating.length} ${rating.length > 1 ? 'reviews' : 'review'})`
+                : ''
+              }
+            </Text>
           </View>
           <TouchableOpacity style={{ marginTop: 5 }} activeOpacity={1} onPress={() => router.push(`/dish/${id}`)}>
             <View

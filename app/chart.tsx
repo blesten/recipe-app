@@ -1,11 +1,23 @@
-import { View, Text, Appearance, StatusBar, ScrollView, Image, PixelRatio } from 'react-native'
+import { View, Text, Appearance, StatusBar, ScrollView, Image, PixelRatio, ActivityIndicator, FlatList } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HorizontalDishCard from '@/components/general/HorizontalDishCard'
 import Tab from '@/components/general/Tab'
+import { getCompletedDish, getUserData } from '@/utils/function'
+import { Colors } from '@/constants/Colors'
 
 const Chart = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())
+  const [userId, setUserId] = useState('')
+  const [dishes, setDishes] = useState<any[] | undefined>([])
+  const [loading, setLoading] = useState(false)
+
+  const getCompletedData = async() => {
+    setLoading(true)
+    const result = await getCompletedDish(userId)
+    setDishes(result)
+    setLoading(false)
+  }
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -13,6 +25,22 @@ const Chart = () => {
     })
 
     return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    if (userId)
+      getCompletedData()
+  }, [userId])
+
+  useEffect(() => {
+    const getUser = async() => {
+      const userData = await getUserData()
+      if (userData) {
+        setUserId(userData.data.id)
+      }
+    }
+
+    getUser()
   }, [])
 
   return (
@@ -28,22 +56,47 @@ const Chart = () => {
         </View>
       </View>
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
-        <ScrollView
+        <View
           style={{
             backgroundColor: '#fff',
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             marginTop: -30,
             paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(6),
-            paddingVertical: PixelRatio.getPixelSizeForLayoutSize(8)
+            paddingVertical: PixelRatio.getPixelSizeForLayoutSize(8),
+            marginBottom: PixelRatio.getPixelSizeForLayoutSize(10)
           }}
         >
-          <HorizontalDishCard />
-          <HorizontalDishCard />
-          <HorizontalDishCard />
-          <HorizontalDishCard />
-          <View style={{ height: PixelRatio.getPixelSizeForLayoutSize(24) }} />
-        </ScrollView>
+          {
+            loading
+            ? <ActivityIndicator color={Colors.PRIMARY} size='large' style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(5) }} />
+            : (
+              <>
+                {
+                  dishes &&
+                  dishes.length === 0
+                  ? <Text>Empty</Text>
+                  : (
+                    <FlatList
+                      refreshing={loading}
+                      onRefresh={getCompletedData}
+                      data={dishes!}
+                      renderItem={({item, index}) => (
+                        <HorizontalDishCard
+                          key={item.dishId}
+                          id={item.dishId}
+                          title={item.dishData.title}
+                          image={item.dishData.image}
+                          createdAt={item.dishData.createdAt}
+                        />
+                      )}
+                    />
+                  )
+                }
+              </>
+            )
+          }
+        </View>
       </View>
       <Tab />
     </SafeAreaView>
