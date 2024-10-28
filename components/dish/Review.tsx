@@ -3,11 +3,12 @@ import React from 'react'
 import { Colors } from '@/constants/Colors'
 
 interface IProps {
+  rating: any[]
   toggleReviewsOverlay: () => void
   slideAnim: any
 }
 
-const Review = ({ toggleReviewsOverlay, slideAnim }: IProps) => {
+const Review = ({ rating, toggleReviewsOverlay, slideAnim }: IProps) => {
   return (
     <TouchableWithoutFeedback onPress={toggleReviewsOverlay}>
       <View
@@ -35,41 +36,70 @@ const Review = ({ toggleReviewsOverlay, slideAnim }: IProps) => {
           >
             <View>
               <Text style={{ fontFamily: 'poppins-semibold', fontSize: 17 * PixelRatio.getFontScale() }}>Dish Reviews</Text>
-              <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(4), flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Image source={require('./../../assets/images/icons/colored/filter.png')} />
-                <View style={{ flexDirection: 'row', gap: 14 }}>
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      borderRadius: 7,
-                      borderWidth: 1,
-                      borderColor: Colors.PRIMARY,
-                      alignSelf: 'flex-start',
-                      paddingVertical: PixelRatio.getPixelSizeForLayoutSize(3),
-                      paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(5),
-                      backgroundColor: Colors.ACCENT
-                    }}
-                  >
-                    <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale() }}>Highest Rating</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    style={{
-                      borderRadius: 7,
-                      borderWidth: 1,
-                      borderColor: '#ccc',
-                      alignSelf: 'flex-start',
-                      paddingVertical: PixelRatio.getPixelSizeForLayoutSize(3),
-                      paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(5)
-                    }}
-                  >
-                    <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale() }}>Newest</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
             </View>
-            <ScrollView style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(14) }}>
-              <View>
+            <ScrollView style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(12) }}>
+              {
+                rating.length > 0
+                ? (
+                  <>
+                    {
+                      rating.map(item => (
+                        <View key={item.id}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                            <View
+                              style={{
+                                width: PixelRatio.getPixelSizeForLayoutSize(18),
+                                height: PixelRatio.getPixelSizeForLayoutSize(18),
+                                backgroundColor: Colors.PRIMARY,
+                                borderRadius: 7,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                              }}
+                            >
+                              {
+                                item.user.avatar
+                                ? <Image source={{ uri: item.user.avatar }} style={{ width: '100%', height: '100%', borderRadius: 7, borderWidth: 1, borderColor: '#DADADA' }} />
+                                : <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', fontSize: 20 * PixelRatio.getFontScale() }}>{(item.user.name.trim().split(' ').length === 1 ? `${item.user.name.trim().split(' ')[0][0]}` : `${item.user.name.trim().split(' ')[0][0]} ${item.user.name.trim().split(' ')[item.user.name.trim().split(' ').length - 1][0]}`)}</Text>
+                              }
+                            </View>
+                            <View>
+                              <Text style={{ fontFamily: 'poppins-medium', fontSize: 15 * PixelRatio.getFontScale() }}>
+                                {item.user.name}
+                              </Text>
+                              <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#A0A0A0' }}>
+                                {
+                                  new Date(item.createdAt.seconds * 1000).toLocaleString('en-GB', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                                  })
+                                }
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={{ flexDirection: 'row', marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
+                            {
+                              Array.from({ length: item.star }).map((_, idx) => (
+                                <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
+                              ))
+                            }
+                          </View>
+                          <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>
+                            {
+                              item.description
+                            }
+                          </Text>
+                          <View style={{ width: 'auto', height: 1, backgroundColor: '#CCC', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }} />
+                        </View>
+                      ))
+                    }
+                  </>
+                )
+                : (
+                  <Text>Empty</Text>
+                )
+              }
+              {/* <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                   <View
                     style={{
@@ -126,36 +156,7 @@ const Review = ({ toggleReviewsOverlay, slideAnim }: IProps) => {
                 </View>
                 <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>The recipe works like a charm!</Text>
                 <View style={{ width: 'auto', height: 1, backgroundColor: '#CCC', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }} />
-              </View>
-              <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <View
-                    style={{
-                      width: PixelRatio.getPixelSizeForLayoutSize(18),
-                      height: PixelRatio.getPixelSizeForLayoutSize(18),
-                      backgroundColor: Colors.PRIMARY,
-                      borderRadius: 7,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', fontSize: 20 * PixelRatio.getFontScale() }}>JD</Text>
-                  </View>
-                  <View>
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 15 * PixelRatio.getFontScale() }}>John Doe</Text>
-                    <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#A0A0A0' }}>25 October 2024</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                </View>
-                <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>The recipe works like a charm!</Text>
-                <View style={{ width: 'auto', height: 1, backgroundColor: '#CCC', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }} />
-              </View>
+              </View> */}
             </ScrollView>
           </Animated.View>
         </TouchableWithoutFeedback>

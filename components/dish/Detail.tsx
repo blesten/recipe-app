@@ -3,14 +3,15 @@ import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
 import { DocumentData } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { getCheftById } from '@/utils/function'
+import { getCheftById, getRatingByDish } from '@/utils/function'
 
 interface IProps {
   toggleReviewsOverlay: () => void
   dish: DocumentData | null
+  rating: any[]
 }
 
-const Detail = ({ toggleReviewsOverlay, dish }: IProps) => {
+const Detail = ({ rating, toggleReviewsOverlay, dish }: IProps) => {
   const router = useRouter()
   const [chefDetail, setChefDetail] = useState<DocumentData | null>(null)
 
@@ -54,7 +55,19 @@ const Detail = ({ toggleReviewsOverlay, dish }: IProps) => {
         <View style={{ width: 1, height: 25, backgroundColor: '#CCC'}} />
         <TouchableOpacity activeOpacity={1} onPress={toggleReviewsOverlay} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <Image source={require('./../../assets/images/icons/colored/star.png')} />
-          <Text style={{ fontFamily: 'poppins-medium', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.3), color: '#A0A0A0' }}>4.8</Text>
+          <Text style={{ fontFamily: 'poppins-medium', marginTop: PixelRatio.getPixelSizeForLayoutSize(1.3), color: '#A0A0A0' }}>
+            {
+              rating.length > 0
+              ? (
+                <>
+                  {
+                    ((rating.reduce((sum, rating) => sum + rating.star, 0)) / rating.length).toFixed(1)
+                  }
+                </>
+              )
+              : 'N/A'
+            }
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(9), flexDirection: 'row', gap: PixelRatio.getPixelSizeForLayoutSize(7) }}>

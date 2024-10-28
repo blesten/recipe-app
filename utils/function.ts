@@ -176,6 +176,27 @@ export const getCompletionStatus = async(userId: string, dishId: string) => {
   return false
 }
 
+export const getRatingByDish = async(dishId: string) => {
+  let rating: any[] = []
+
+  const ratingQuery = query(collection(db, 'Rating'), where('dishId', '==', dishId))
+  const ratingQuerySnapshot = await getDocs(ratingQuery)
+  
+  for (const docSnapshot of ratingQuerySnapshot.docs) {
+    const ratingData = docSnapshot.data()
+    const userId = ratingData.userId
+
+    const userDoc = await getDoc(doc(db, 'User', userId))
+
+    const userData = userDoc.exists() ? userDoc.data() : null
+    rating.push({ id: docSnapshot.id, ...ratingData, user: userData })
+  }
+
+  rating.sort((a, b) => b.star - a.star)
+
+  return rating
+}
+
 export const uploadImage = async(fileUri: string, type: string) => {
   const formData = new FormData()
 

@@ -11,12 +11,13 @@ import Detail from '@/components/dish/Detail'
 import Rate from '@/components/dish/Rate'
 import { useLocalSearchParams } from 'expo-router'
 import { DocumentData } from 'firebase/firestore'
-import { getCompletionStatus, getDishById, getUserData } from '@/utils/function'
+import { getCompletionStatus, getDishById, getRatingByDish, getUserData } from '@/utils/function'
 
 const DishDetail = () => {
   const { id } = useLocalSearchParams()
   const [dishDetail, setDishDetail] = useState<DocumentData | null>(null)
   const [userId, setUserId] = useState('')
+  const [rating, setRating] = useState<any[]>([])
 
   const [theme, setTheme] = useState(Appearance.getColorScheme())
 
@@ -99,11 +100,21 @@ const DishDetail = () => {
     getStatus()
   }, [userId, id])
 
+  useEffect(() => {
+    const getRating = async(id: string) => {
+      const result = await getRatingByDish(id)
+      setRating(result)
+    }
+
+    if (id)
+      getRating(id as string)
+  }, [id])
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <StatusBar backgroundColor={theme === 'dark' ? '#000' : '#fff'} />
       <Header dish={dishDetail} />
-      <Detail dish={dishDetail} toggleReviewsOverlay={toggleReviewsOverlay} />
+      <Detail rating={rating} dish={dishDetail} toggleReviewsOverlay={toggleReviewsOverlay} />
       <View style={{ flex: 1 }}>
         <ScrollView>
           <Ingredients dish={dishDetail} />
@@ -146,6 +157,7 @@ const DishDetail = () => {
       {
         isReviewsClicked &&
         <Review
+          rating={rating}
           toggleReviewsOverlay={toggleReviewsOverlay}
           slideAnim={slideAnim}
         />
