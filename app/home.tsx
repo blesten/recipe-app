@@ -7,9 +7,12 @@ import BestChef from '@/components/home/BestChef'
 import Header from '@/components/home/Header'
 import Search from '@/components/home/Search'
 import Tab from '@/components/general/Tab'
+import { getBestChef, getPopularDish } from '@/utils/function';
 
 const Home = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme())
+  const [popularDish, setPopularDish] = useState<any[]>([])
+  const [chef, setChef] = useState<any[]>([])
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -34,6 +37,24 @@ const Home = () => {
     }, [])
   )
 
+  useEffect(() => {
+    const getDish = async() => {
+      const result = await getPopularDish()
+      setPopularDish(result)
+    }
+
+    getDish()
+  }, [])
+
+  useEffect(() => {
+    const getChef = async() => {
+      const result = await getBestChef()
+      setChef(result)
+    }
+    
+    getChef()
+  }, [])
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={theme === 'dark' ? '#000' : '#fff'} />
@@ -47,8 +68,8 @@ const Home = () => {
         >
           <Header />
           <Search />
-          <BestChef />
-          <PopularDish />
+          <BestChef chef={chef} />
+          <PopularDish dish={popularDish} />
           <View style={{ height: PixelRatio.getPixelSizeForLayoutSize(24) }} />
         </ScrollView>
         <Tab />

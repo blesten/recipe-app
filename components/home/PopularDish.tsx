@@ -1,10 +1,11 @@
-import { View, Text, PixelRatio, TouchableOpacity } from 'react-native'
-import { Colors } from '@/constants/Colors'
+import { View, Text, PixelRatio, TouchableOpacity, FlatList } from 'react-native'
 import DishCard from './DishCard'
-import { useRouter } from 'expo-router'
 
-const PopularDish = () => {
-  const router = useRouter()
+interface IProps {
+  dish: any[]
+}
+
+const PopularDish = ({ dish }: IProps) => {
 
   return (
     <View
@@ -20,12 +21,21 @@ const PopularDish = () => {
         }}
       >
         <Text style={{ fontFamily: 'poppins-semibold', fontSize: 22 * PixelRatio.getFontScale() }}>Popular Dish</Text>
-        <TouchableOpacity onPress={() => router.push('/popular-dish-list')} activeOpacity={1}>
-          <Text style={{ fontFamily: 'poppins-semibold', color: Colors.SECONDARY }}>View All</Text>
-        </TouchableOpacity>
       </View>
       <View style={{ marginTop: PixelRatio.getPixelSizeForLayoutSize(5) }}>
-        <DishCard />
+        <FlatList
+          data={dish}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item, index}) => (
+            <DishCard
+              key={index}
+              data={item}
+              idx={index}
+              len={dish.length}
+            />
+          )}
+        />
       </View>
     </View>
   )

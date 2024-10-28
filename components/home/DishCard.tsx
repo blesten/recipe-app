@@ -1,13 +1,22 @@
-import { View, Text, Dimensions, PixelRatio, TouchableOpacity } from 'react-native'
+import { View, Image, Text, Dimensions, PixelRatio, TouchableOpacity } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Colors } from '@/constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useRouter } from 'expo-router'
 
-const DishCard = () => {
+interface IProps {
+  data: any
+  idx: number
+  len: number
+}
+
+const DishCard = ({ data, idx, len }: IProps) => {
   const { width } = Dimensions.get('window')
 
+  const router = useRouter()
+
   return (
-    <View style={{ alignItems: 'center', alignSelf: 'flex-start' }}>
+    <View style={{ alignItems: 'center', alignSelf: 'flex-start', marginRight: idx !== len - 1 ? PixelRatio.getPixelSizeForLayoutSize(7) : 0 }}>
       <View
         style={{
           width: width * 0.5,
@@ -19,7 +28,7 @@ const DishCard = () => {
           position: 'relative'
         }}
       >
-        {/* Image */}
+        <Image source={{ uri: data.image }} style={{ width: '100%', height: '100%', borderRadius: 10, borderWidth: 1, borderColor: '#eee' }} />
         <View
           style={{
             position: 'absolute',
@@ -27,17 +36,17 @@ const DishCard = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0,0,0,.3)',
+            backgroundColor: 'rgba(0,0,0,.4)',
             borderRadius: 10,
             paddingHorizontal: 15,
             paddingBottom: 45,
             justifyContent: 'flex-end'
           }}
         >
-          <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 22 * PixelRatio.getFontScale(), textAlign: 'center' }}>Caesar Salad</Text>
+          <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 22 * PixelRatio.getFontScale(), textAlign: 'center' }}>{data.title}</Text>
         </View>
       </View>
-      <TouchableOpacity activeOpacity={1}>
+      <TouchableOpacity onPress={() => router.push(`/dish/${data.id}`)} activeOpacity={1}>
         <View
           style={{
             borderRadius: 50,

@@ -243,6 +243,89 @@ export const getRatingByChef = async(chefId: string) => {
   return rating
 }
 
+export const getPopularDish = async() => {
+  let ratings: any[] = []
+  
+  const ratingQuery = query(collection(db, 'Rating'))
+  const ratingQuerySnapshot = await getDocs(ratingQuery)
+
+  ratingQuerySnapshot.forEach(doc => {
+    ratings = [...ratings, { id: doc.id, ...doc.data() }];
+  })
+
+  const dishRatings: Record<string, { totalRating: number; count: number }> = {}
+
+  ratings.forEach(({ dishId, star }) => {
+    if (!dishRatings[dishId]) {
+      dishRatings[dishId] = { totalRating: 0, count: 0 }
+    }
+    dishRatings[dishId].totalRating += star
+    dishRatings[dishId].count += 1
+  })
+
+  const dishAverages = Object.entries(dishRatings).map(([dishId, { totalRating, count }]) => ({
+    dishId,
+    avgRating: totalRating / count,
+  }))
+
+  const topDishIds = dishAverages
+    .sort((a, b) => b.avgRating - a.avgRating)
+    .slice(0, 5)
+    .map(dish => dish.dishId)
+
+  const dishPromises = topDishIds.map(dishId => {
+    const dishDocRef = doc(db, 'Dish', dishId)
+    return getDoc(dishDocRef)
+  })
+
+  const dishDocs = await Promise.all(dishPromises)
+  // @ts-ignore
+  const topDishes = dishDocs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+  return topDishes
+}
+
+export const getBestChef = async() => {
+  let ratings: any[] = []
+
+  const ratingQuery = query(collection(db, 'Rating'))
+  const ratingQuerySnapshot = await getDocs(ratingQuery)
+
+  ratingQuerySnapshot.forEach(doc => {
+    ratings = [...ratings, { id: doc.id, ...doc.data() }]
+  })
+
+  const chefRatings: Record<string, { totalRating: number; count: number }> = {}
+
+  ratings.forEach(({ chefId, star }) => {
+    if (!chefRatings[chefId]) {
+      chefRatings[chefId] = { totalRating: 0, count: 0 }
+    }
+    chefRatings[chefId].totalRating += star
+    chefRatings[chefId].count += 1
+  })
+
+  const chefAverages = Object.entries(chefRatings).map(([chefId, { totalRating, count }]) => ({
+    chefId,
+    avgRating: totalRating / count,
+  }))
+
+  const topChefIds = chefAverages
+    .sort((a, b) => b.avgRating - a.avgRating)
+    .slice(0, 5)
+    .map(chef => chef.chefId)
+
+  const chefPromises = topChefIds.map(async chefId => {
+    const chefDocRef = doc(db, 'ChefProfile', chefId);
+    const chefDoc = await getDoc(chefDocRef)
+    return { id: chefId, ...chefDoc.data() }
+  })
+
+  const topChefs = await Promise.all(chefPromises)
+
+  return topChefs
+}
+
 export const uploadImage = async(fileUri: string, type: string) => {
   const formData = new FormData()
 
