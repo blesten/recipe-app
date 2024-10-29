@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
-import { View, Text, StatusBar, PixelRatio, TouchableOpacity, Appearance, ScrollView, TextInput, ActivityIndicator } from 'react-native'
+import { View, Text, StatusBar, PixelRatio, Image, TouchableOpacity, Appearance, ScrollView, TextInput, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Search = () => {
@@ -100,8 +100,9 @@ const Search = () => {
                 {
                   searchValue.length > 3 && dishes.length === 0
                   ? (
-                    <View>
-                      <Text>Empty</Text>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: PixelRatio.getPixelSizeForLayoutSize(16) }}>
+                      <Image source={require('./../assets/images/empty.png')} />
+                      <Text style={{ fontFamily: 'poppins-medium', fontSize: 16 * PixelRatio.getFontScale(), color: '#A0A0A0', textAlign: 'center',  }}>There's no dish matched your search</Text>
                     </View>
                   )
                   : (

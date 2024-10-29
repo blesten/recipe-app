@@ -1,4 +1,4 @@
-import { View, Text, Appearance, StatusBar, TouchableOpacity, PixelRatio, ScrollView, FlatList, ActivityIndicator } from 'react-native'
+import { View, Image, Text, Appearance, StatusBar, TouchableOpacity, PixelRatio, ScrollView, FlatList, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, useRouter } from 'expo-router'
@@ -57,7 +57,12 @@ const ChefLatestDishes = () => {
             <>
               {
                 chefDishes.length === 0
-                ? <Text>Empty</Text>
+                ? (
+                  <View style={{ alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: PixelRatio.getPixelSizeForLayoutSize(16) }}>
+                    <Image source={require('./../../assets/images/empty.png')} />
+                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 16 * PixelRatio.getFontScale(), color: '#A0A0A0', textAlign: 'center',  }}>There's no dish that published by chef</Text>
+                  </View>
+                )
                 : (
                   <FlatList
                     refreshing={loading}

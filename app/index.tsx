@@ -43,7 +43,7 @@ const Index = () => {
     )
   }
 
-  return <Text>Loading fonts ...</Text>
+  return <Text></Text>
 }
 
 export default Index

@@ -18,19 +18,18 @@ const ChefCard = ({ data }: IProps) => {
         end={{ x: 0, y: 0 }}
         style={{
           borderRadius: 8,
-          paddingTop: PixelRatio.getPixelSizeForLayoutSize(4.6),
-          paddingBottom: PixelRatio.getPixelSizeForLayoutSize(4.3),
           alignItems: 'center',
+          width: PixelRatio.getPixelSizeForLayoutSize(24),
+          height: PixelRatio.getPixelSizeForLayoutSize(24),
           justifyContent: 'center',
-          paddingHorizontal: PixelRatio.getPixelSizeForLayoutSize(5)
         }}
       >
         {
           data.avatar
           ? <Image source={{ uri: data.avatar }} style={{ width: '100%', height: '100%', borderRadius: 8, borderWidth: 1, borderColor: '#DADADA' }} />
           : (
-            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', fontSize: 21 * PixelRatio.getFontScale() }}>
-              {(data.name.trim().split(' ').length === 1 ? `${data.name.trim().split(' ')[0][0]}` : `${data.name.trim().split(' ')[0][0]} ${data.name.trim().split(' ')[data.name.trim().split(' ').length - 1][0]}`)}
+            <Text style={{ fontFamily: 'poppins-semibold', color: '#fff', fontSize: 28 * PixelRatio.getFontScale() }}>
+              {(data.name.trim().split(' ').length === 1 ? `${data.name.trim().split(' ')[0][0]}` : `${data.name.trim().split(' ')[0][0]}${data.name.trim().split(' ')[data.name.trim().split(' ').length - 1][0]}`)}
             </Text>
           )
         }

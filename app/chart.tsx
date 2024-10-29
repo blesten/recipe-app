@@ -75,7 +75,12 @@ const Chart = () => {
                 {
                   dishes &&
                   dishes.length === 0
-                  ? <Text>Empty</Text>
+                  ? (
+                    <View style={{ alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: PixelRatio.getPixelSizeForLayoutSize(16) }}>
+                      <Image source={require('./../assets/images/empty.png')} />
+                      <Text style={{ fontFamily: 'poppins-medium', fontSize: 16 * PixelRatio.getFontScale(), color: '#A0A0A0', textAlign: 'center',  }}>There's no completed dish</Text>
+                    </View>
+                  )
                   : (
                     <FlatList
                       refreshing={loading}

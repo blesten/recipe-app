@@ -96,67 +96,12 @@ const Review = ({ rating, toggleReviewsOverlay, slideAnim }: IProps) => {
                   </>
                 )
                 : (
-                  <Text>Empty</Text>
+                  <View style={{ alignItems: 'center', justifyContent: 'center', gap: 16, marginTop: PixelRatio.getPixelSizeForLayoutSize(5) }}>
+                    <Image source={require('./../../assets/images/empty.png')} />
+                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 16 * PixelRatio.getFontScale(), color: '#A0A0A0', textAlign: 'center',  }}>There's no review on this dish</Text>
+                  </View>
                 )
               }
-              {/* <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <View
-                    style={{
-                      width: PixelRatio.getPixelSizeForLayoutSize(18),
-                      height: PixelRatio.getPixelSizeForLayoutSize(18),
-                      backgroundColor: Colors.PRIMARY,
-                      borderRadius: 7,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', fontSize: 20 * PixelRatio.getFontScale() }}>JD</Text>
-                  </View>
-                  <View>
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 15 * PixelRatio.getFontScale() }}>John Doe</Text>
-                    <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#A0A0A0' }}>25 October 2024</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                </View>
-                <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>The recipe works like a charm!</Text>
-                <View style={{ width: 'auto', height: 1, backgroundColor: '#CCC', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }} />
-              </View>
-              <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <View
-                    style={{
-                      width: PixelRatio.getPixelSizeForLayoutSize(18),
-                      height: PixelRatio.getPixelSizeForLayoutSize(18),
-                      backgroundColor: Colors.PRIMARY,
-                      borderRadius: 7,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text style={{ color: '#fff', fontFamily: 'poppins-semibold', fontSize: 20 * PixelRatio.getFontScale() }}>JD</Text>
-                  </View>
-                  <View>
-                    <Text style={{ fontFamily: 'poppins-medium', fontSize: 15 * PixelRatio.getFontScale() }}>John Doe</Text>
-                    <Text style={{ fontFamily: 'poppins-regular', fontSize: 12 * PixelRatio.getFontScale(), color: '#A0A0A0' }}>25 October 2024</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: PixelRatio.getPixelSizeForLayoutSize(6) }}>
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                  <Image source={require('./../../assets/images/icons/colored/star.png')} style={{ width: 22, height: 22, marginLeft: -4 }} />
-                </View>
-                <Text style={{ fontFamily: 'poppins-regular', fontSize: 13 * PixelRatio.getFontScale(), marginTop: PixelRatio.getPixelSizeForLayoutSize(3) }}>The recipe works like a charm!</Text>
-                <View style={{ width: 'auto', height: 1, backgroundColor: '#CCC', marginVertical: PixelRatio.getPixelSizeForLayoutSize(6) }} />
-              </View> */}
             </ScrollView>
           </Animated.View>
         </TouchableWithoutFeedback>
