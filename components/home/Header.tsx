@@ -35,7 +35,7 @@ const Header = () => {
         <Text style={{ fontFamily: 'poppins-semibold', fontSize: 24 * PixelRatio.getFontScale() }}>
           {user && user.name}
         </Text>
-      </View>
+      </View> 
       <LinearGradient
         colors={[Colors.PRIMARY, Colors.SECONDARY]}
         start={{ x: 0, y: 1 }}
@@ -55,7 +55,7 @@ const Header = () => {
             user && user.avatar
             ? <Image source={{ uri: user.avatar }} style={{ width: PixelRatio.getPixelSizeForLayoutSize(17), height: PixelRatio.getPixelSizeForLayoutSize(17), borderRadius: 8, borderWidth: 1, borderColor: '#DADADA' }} />
             : (
-              <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 20 * PixelRatio.getFontScale(), letterSpacing: 1 }}>
+              <Text style={{ color: '#fff', fontFamily: 'poppins-medium', fontSize: 20 * PixelRatio.getFontScale() }}>
                 {user && (user.name.trim().split(' ').length === 1 ? `${user.name.trim().split(' ')[0][0]}` : `${user.name.trim().split(' ')[0][0]} ${user.name.trim().split(' ')[user.name.trim().split(' ').length - 1][0]}`)}
               </Text> 
             )
