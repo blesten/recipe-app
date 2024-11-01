@@ -131,7 +131,7 @@ const HorizontalDishCard = ({ id, image, title, createdAt }: IProps) => {
             </View>
           </TouchableOpacity>
         </View>
-        <Text style={{ color: '#797979', fontFamily: 'poppins-regular', fontSize: 9 * PixelRatio.getFontScale() }}>{moment(new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000)).fromNow()}</Text>
+        {/* <Text style={{ color: '#797979', fontFamily: 'poppins-regular', fontSize: 9 * PixelRatio.getFontScale() }}>{moment(new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000)).fromNow()}</Text> */}
       </View>
     </View>
   )
