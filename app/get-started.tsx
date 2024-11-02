@@ -1,9 +1,26 @@
-import { View, Text, SafeAreaView, PixelRatio, StatusBar, Image, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, PixelRatio, StatusBar, Image, TouchableOpacity, BackHandler } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Colors } from '@/constants/Colors'
+import { useFocusEffect } from '@react-navigation/native'
+import { useCallback } from 'react'
 
 const GetStarted = () => {
   const router = useRouter()
+
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => {
+        return true
+      }
+  
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction
+      )
+  
+      return () => backHandler.remove()
+    }, [])
+  )
 
   return (
     <SafeAreaView>

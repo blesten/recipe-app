@@ -62,7 +62,7 @@ const SignOut = () => {
           }}
           source={require('./../assets/images/sign_up.png')}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={.7}
           style={{
             width: '100%',
@@ -89,8 +89,8 @@ const SignOut = () => {
           >
             Sign up with Google
           </Text>
-        </TouchableOpacity>
-        <View
+        </TouchableOpacity> */}
+        {/* <View
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -123,7 +123,7 @@ const SignOut = () => {
               backgroundColor: '#fff'
             }}
           />
-        </View>
+        </View> */}
         <TouchableOpacity
           onPress={() => router.push('/sign-up-form')}
           activeOpacity={.7}

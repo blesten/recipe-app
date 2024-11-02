@@ -279,7 +279,7 @@ const SignIn = () => {
               Don't have an account yet? Click
             </Text>
             <TouchableOpacity
-              onPress={() => router.push('/sign-up')}
+              onPress={() => router.push('/sign-up-form')}
               activeOpacity={1}
             >
               <Text
@@ -295,7 +295,7 @@ const SignIn = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -356,7 +356,7 @@ const SignIn = () => {
           >
             Sign in with Google
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   )
