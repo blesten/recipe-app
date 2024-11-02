@@ -312,7 +312,7 @@ export const getBestChef = async() => {
 
   const topChefIds = chefAverages
     .sort((a, b) => b.avgRating - a.avgRating)
-    .slice(0, 5)
+    .slice(0, 4)
     .map(chef => chef.chefId)
 
   const chefPromises = topChefIds.map(async chefId => {
